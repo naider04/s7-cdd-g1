@@ -74,14 +74,14 @@ class NetworkCanvas(tk.Frame):
             self.canvas.create_line(x1, y1, x2, y2, fill="#38bdf8", width=2, dash=(6, 4), tags="static")
 
         # Draw Nodes
-        self._draw_node("Person A", x_person_a, y_center, "👤", "Person A\n192.168.1.10", theme.OSI_COLORS[5])
-        self._draw_node("Switch", x_switch, y_center, "🔀", "Switch\nLayer 2", theme.OSI_COLORS[2])
-        self._draw_node("Router", x_router1, y_center, "🌐", "Router 1\nGateway", theme.OSI_COLORS[3])
-        self._draw_node("Router 2", x_router2, y_center, "🌐", "Router 2\nWAN Core", theme.OSI_COLORS[3])
-        self._draw_node("Person B", x_person_b, y_center, "👤", "Person B\n192.168.1.25", theme.OSI_COLORS[1])
+        self._draw_node("Person A", x_person_a, y_center, "👤", "Persona A\n192.168.1.10", theme.OSI_COLORS[5])
+        self._draw_node("Switch", x_switch, y_center, "🔀", "Switch\nCapa 2", theme.OSI_COLORS[2])
+        self._draw_node("Router", x_router1, y_center, "🌐", "Router 1\nPuerta de enlace", theme.OSI_COLORS[3])
+        self._draw_node("Router 2", x_router2, y_center, "🌐", "Router 2\nNúcleo WAN", theme.OSI_COLORS[3])
+        self._draw_node("Person B", x_person_b, y_center, "👤", "Persona B\n192.168.1.25", theme.OSI_COLORS[1])
 
         # Bottom stats bar
-        stats_text = f"Network Traffic: Sent: {self.stat_sent} | Received: {self.stat_recv} | Dropped: {self.stat_drop} | Link: 1000 Mbps Full-Duplex"
+        stats_text = f"Tráfico de red: Enviados: {self.stat_sent} | Recibidos: {self.stat_recv} | Perdidos: {self.stat_drop} | Enlace: 1000 Mbps Full-Dúplex"
         self.canvas.create_text(w / 2, h - 14, text=stats_text, fill=theme.TEXT_MUTED, font=theme.FONT_TINY, tags="static")
 
     def _draw_node(self, name: str, x: float, y: float, icon: str, label: str, color: str):
@@ -173,7 +173,7 @@ class NetworkCanvas(tk.Frame):
                     self.stat_drop += 1
                     # Show dropped explosion animation at current point
                     last_x, last_y = all_pts[-1]
-                    self.canvas.create_text(last_x, last_y - 25, text="💥 DROPPED (✗)", font=theme.FONT_BODY_BOLD, fill=theme.COLOR_ERROR, tags="anim_packet")
+                    self.canvas.create_text(last_x, last_y - 25, text="💥 PERDIDO (✗)", font=theme.FONT_BODY_BOLD, fill=theme.COLOR_ERROR, tags="anim_packet")
                     self.canvas.itemconfig(pkt_rect, fill=theme.COLOR_ERROR)
                     self.after(400, lambda: self._cleanup_and_callback(on_complete))
                 else:

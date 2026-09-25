@@ -24,20 +24,20 @@ class EventLogWidget(tk.Frame):
 
         tk.Label(
             top_bar,
-            text="📋 Chronological Event Log",
+            text="📋 Registro cronológico de eventos",
             font=theme.FONT_SUBTITLE,
             fg=theme.TEXT_PRIMARY,
             bg=theme.BG_PANEL
         ).pack(side=tk.LEFT, padx=(0, 10))
 
         # Filter buttons
-        self.btn_all = tk.Button(top_bar, text="All", font=theme.FONT_TINY, bg=theme.BG_CARD, fg=theme.TEXT_PRIMARY, bd=0, padx=6, command=lambda: self.set_filter("ALL"))
+        self.btn_all = tk.Button(top_bar, text="Todos", font=theme.FONT_TINY, bg=theme.BG_CARD, fg=theme.TEXT_PRIMARY, bd=0, padx=6, command=lambda: self.set_filter("ALL"))
         self.btn_all.pack(side=tk.LEFT, padx=2)
 
-        self.btn_warn = tk.Button(top_bar, text="⚠ Issues", font=theme.FONT_TINY, bg=theme.BG_CARD, fg=theme.COLOR_WARNING, bd=0, padx=6, command=lambda: self.set_filter("ISSUES"))
+        self.btn_warn = tk.Button(top_bar, text="⚠ Problemas", font=theme.FONT_TINY, bg=theme.BG_CARD, fg=theme.COLOR_WARNING, bd=0, padx=6, command=lambda: self.set_filter("ISSUES"))
         self.btn_warn.pack(side=tk.LEFT, padx=2)
 
-        btn_clear = tk.Button(top_bar, text="Clear", font=theme.FONT_TINY, bg=theme.BG_CARD, fg=theme.TEXT_MUTED, bd=0, padx=6, command=self.clear_log)
+        btn_clear = tk.Button(top_bar, text="Limpiar", font=theme.FONT_TINY, bg=theme.BG_CARD, fg=theme.TEXT_MUTED, bd=0, padx=6, command=self.clear_log)
         btn_clear.pack(side=tk.RIGHT)
 
         # Scrollable Text area

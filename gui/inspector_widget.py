@@ -24,7 +24,7 @@ class InspectorWidget(tk.Frame):
 
         tk.Label(
             top_bar,
-            text="🔍 Deep Packet Inspector",
+            text="🔍 Inspector profundo de paquetes",
             font=theme.FONT_SUBTITLE,
             fg=theme.TEXT_PRIMARY,
             bg=theme.BG_PANEL
@@ -72,7 +72,7 @@ class InspectorWidget(tk.Frame):
         self.right_col = tk.Frame(content_pane, bg=theme.BG_CARD, bd=1, relief=tk.SOLID, padx=10, pady=8, width=320)
         self.right_col.pack(side=tk.RIGHT, fill=tk.BOTH, expand=False)
 
-        tk.Label(self.right_col, text="Raw Payload / Hex Dissection", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_PRIMARY, bg=theme.BG_CARD).pack(anchor=tk.W)
+        tk.Label(self.right_col, text="Carga útil bruta / desglose hex", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_PRIMARY, bg=theme.BG_CARD).pack(anchor=tk.W)
 
         self.hex_text = tk.Text(
             self.right_col,
@@ -123,7 +123,7 @@ class InspectorWidget(tk.Frame):
         meta = theme.OSI_METADATA[lyr]
 
         self.lbl_layer_title.config(
-            text=f"Layer {lyr} — {meta['name']} Protocol Data Unit [{meta['pdu']}]",
+            text=f"Capa {lyr} — Unidad de datos de protocolo {meta['name']} [{meta['pdu']}]",
             fg=meta['color']
         )
 
@@ -133,58 +133,58 @@ class InspectorWidget(tk.Frame):
         fields = []
         if lyr == 7:  # Application
             fields = [
-                ("Protocol:", d.app_protocol),
-                ("Data Payload Size:", f"{d.raw_size_bytes} Bytes"),
-                ("Format / MIME:", "Text / JSON / Binary Stream"),
-                ("Payload Preview:", d.payload_text[:40] + ("..." if len(d.payload_text) > 40 else ""))
+                ("Protocolo:", d.app_protocol),
+                ("Tamaño de carga útil:", f"{d.raw_size_bytes} bytes"),
+                ("Formato / MIME:", "Texto / JSON / flujo binario"),
+                ("Vista previa:", d.payload_text[:40] + ("..." if len(d.payload_text) > 40 else ""))
             ]
         elif lyr == 6:  # Presentation
             fields = [
-                ("Character Encoding:", d.encoding),
-                ("Data Compression:", d.compression),
-                ("Encryption / Cipher:", d.encryption),
-                ("Data Formatting:", "MIME / Abstract Syntax Notation (ASN.1)")
+                ("Codificación de caracteres:", d.encoding),
+                ("Compresión de datos:", d.compression),
+                ("Cifrado:", d.encryption),
+                ("Formato de datos:", "MIME / Notación de sintaxis abstracta (ASN.1)")
             ]
         elif lyr == 5:  # Session
             fields = [
-                ("Session Identifier:", d.session_id),
-                ("Connection State:", d.session_state),
-                ("Authentication Token:", d.session_token),
-                ("Dialog Management:", "Full-Duplex Synchronized")
+                ("Identificador de sesión:", d.session_id),
+                ("Estado de conexión:", d.session_state),
+                ("Token de autenticación:", d.session_token),
+                ("Gestión de diálogo:", "Dúplex completo sincronizado")
             ]
         elif lyr == 4:  # Transport
             fields = [
-                ("Transport Protocol:", d.transport_protocol),
-                ("Source Port:", str(d.src_port)),
-                ("Destination Port:", str(d.dst_port)),
-                ("Sequence Number:", str(d.seq_num)),
-                ("Acknowledgment (ACK):", str(d.ack_num)),
-                ("Control Flags:", d.flags),
-                ("Window Size:", f"{d.window_size} bytes (Flow Control)")
+                ("Protocolo de transporte:", d.transport_protocol),
+                ("Puerto de origen:", str(d.src_port)),
+                ("Puerto de destino:", str(d.dst_port)),
+                ("Número de secuencia:", str(d.seq_num)),
+                ("Acuse (ACK):", str(d.ack_num)),
+                ("Banderas de control:", d.flags),
+                ("Tamaño de ventana:", f"{d.window_size} bytes (control de flujo)")
             ]
         elif lyr == 3:  # Network
             fields = [
-                ("IP Version:", d.ip_version),
-                ("Source IP Address:", d.ip_src),
-                ("Destination IP Address:", d.ip_dst),
-                ("Time To Live (TTL):", str(d.ip_ttl)),
-                ("Encapsulated Protocol:", d.ip_protocol),
-                ("Header Checksum:", d.ip_checksum)
+                ("Versión IP:", d.ip_version),
+                ("Dirección IP de origen:", d.ip_src),
+                ("Dirección IP de destino:", d.ip_dst),
+                ("Tiempo de vida (TTL):", str(d.ip_ttl)),
+                ("Protocolo encapsulado:", d.ip_protocol),
+                ("Checksum de cabecera:", d.ip_checksum)
             ]
         elif lyr == 2:  # Data Link
             fields = [
-                ("Frame Type:", d.frame_type),
-                ("Source MAC Address:", d.frame_src_mac),
-                ("Destination MAC Address:", d.frame_dst_mac),
-                ("Frame Check Sequence (FCS):", d.frame_fcs),
-                ("MTU Payload Size:", "1500 bytes")
+                ("Tipo de trama:", d.frame_type),
+                ("Dirección MAC de origen:", d.frame_src_mac),
+                ("Dirección MAC de destino:", d.frame_dst_mac),
+                ("Secuencia de verificación (FCS):", d.frame_fcs),
+                ("Tamaño MTU de carga útil:", "1500 bytes")
             ]
         elif lyr == 1:  # Physical
             fields = [
-                ("Physical Transmission:", "Baseband Electrical / Optical Pulses"),
-                ("Encoding Scheme:", "Manchester / 4B5B Line Coding"),
-                ("Medium:", "Category 6 UTP Copper Cable (1 Gbps)"),
-                ("Raw Bits Output:", d.bitstream[:38] + "...")
+                ("Transmisión física:", "Pulsos eléctricos / ópticos en banda base"),
+                ("Esquema de codificación:", "Manchester / codificación de línea 4B5B"),
+                ("Medio:", "Cable de cobre UTP categoría 6 (1 Gbps)"),
+                ("Salida de bits crudos:", d.bitstream[:38] + "...")
             ]
 
         # Populate Fields Grid
@@ -197,7 +197,7 @@ class InspectorWidget(tk.Frame):
         # Update Hex Dump
         self.hex_text.config(state="normal")
         self.hex_text.delete("1.0", tk.END)
-        self.hex_text.insert(tk.END, d.payload_hex or "(Empty payload)")
+        self.hex_text.insert(tk.END, d.payload_hex or "(Carga útil vacía)")
         self.hex_text.config(state="disabled")
 
         # Visual encapsulation hierarchy bar

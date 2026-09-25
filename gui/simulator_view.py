@@ -59,7 +59,7 @@ class SimulatorView(tk.Frame):
         # Back button
         btn_back = tk.Button(
             top,
-            text="← Missions Menu",
+            text="← Menú de misiones",
             font=theme.FONT_SMALL,
             bg=theme.BG_CARD,
             fg=theme.TEXT_PRIMARY,
@@ -99,7 +99,7 @@ class SimulatorView(tk.Frame):
 
         self.lbl_progress = tk.Label(
             ctrls,
-            text="Interactive Decision Mode: Active",
+            text="Modo de decisiones interactivas: activo",
             font=theme.FONT_SMALL,
             fg=theme.COLOR_SUCCESS,
             bg=theme.BG_PANEL
@@ -108,7 +108,7 @@ class SimulatorView(tk.Frame):
 
         btn_reset = tk.Button(
             ctrls,
-            text="↺ Restart Mission",
+            text="↺ Reiniciar misión",
             font=theme.FONT_SMALL,
             bg=theme.BG_CARD,
             fg=theme.TEXT_MUTED,
@@ -128,8 +128,8 @@ class SimulatorView(tk.Frame):
         # Left: Person A (Sender) OSI Stack
         self.sender_stack = OsiStackWidget(
             middle,
-            title="👤 PERSON A",
-            subtitle="SENDER",
+            title="👤 PERSONA A",
+            subtitle="EMISOR",
             is_sender=True,
             on_layer_select=self.on_layer_selected_by_user,
             on_repair_trigger=self.on_wrench_clicked
@@ -146,8 +146,8 @@ class SimulatorView(tk.Frame):
         # Right: Person B (Receiver) OSI Stack
         self.receiver_stack = OsiStackWidget(
             middle,
-            title="👤 PERSON B",
-            subtitle="RECEIVER",
+            title="👤 PERSONA B",
+            subtitle="RECEPTOR",
             is_sender=False,
             on_layer_select=self.on_layer_selected_by_user,
             on_repair_trigger=self.on_wrench_clicked
@@ -164,7 +164,7 @@ class SimulatorView(tk.Frame):
 
         # Tab 1: Interactive Decision Console & Visual Output
         tab_interactive = tk.Frame(notebook, bg=theme.BG_PANEL)
-        notebook.add(tab_interactive, text="  🎮 Interactive Decision Console & Live Output  ")
+        notebook.add(tab_interactive, text="  🎮 Consola de decisiones y salida en vivo  ")
 
         paned = tk.PanedWindow(tab_interactive, orient=tk.HORIZONTAL, bg=theme.BORDER, bd=0, sashwidth=4)
         paned.pack(fill=tk.BOTH, expand=True)
@@ -217,15 +217,15 @@ class SimulatorView(tk.Frame):
 
         # Tab 2: Deep Packet Inspector
         self.inspector = InspectorWidget(notebook)
-        notebook.add(self.inspector, text="  🔍 Deep Packet Inspector  ")
+        notebook.add(self.inspector, text="  🔍 Inspector profundo de paquetes  ")
 
         # Tab 3: Chronological Event Log
         self.event_log = EventLogWidget(notebook)
-        notebook.add(self.event_log, text="  📋 Event Log  ")
+        notebook.add(self.event_log, text="  📋 Registro de eventos  ")
 
         # Tab 4: OSI Reference Guide
         tab_guide = tk.Frame(notebook, bg=theme.BG_CARD, padx=14, pady=10)
-        notebook.add(tab_guide, text="  📖 OSI 7-Layer Reference  ")
+        notebook.add(tab_guide, text="  📖 Guía de referencia OSI (7 capas)  ")
         self._build_osi_guide(tab_guide)
 
     def _sync_decision_scrollregion(self, _event=None):
@@ -253,14 +253,14 @@ class SimulatorView(tk.Frame):
 
     def _build_osi_guide(self, parent: tk.Widget):
         guide_text = (
-            "THE 7 LAYERS OF THE OSI MODEL (DECISION-DRIVEN GUIDE):\n\n"
-            "• Layer 7 (Application): Human interface & network services (HTTP/HTTPS, DNS, FTP, Chat).\n"
-            "• Layer 6 (Presentation): Character encodings (UTF-8, ASCII), compression (H.264), encryption (TLS/AES). Mismatches cause Mojibake.\n"
-            "• Layer 5 (Session): Establishment, authentication, and teardown of communication channels (SIP, Keep-Alive, Tokens).\n"
-            "• Layer 4 (Transport): End-to-end transport protocol (TCP reliable/ordered vs UDP low-latency datagrams, Port numbers).\n"
-            "• Layer 3 (Network): Logical IP routing and addressing across interconnected subnets (Routers, Gateways, TTL).\n"
-            "• Layer 2 (Data Link): Physical MAC addressing, local framing, and CRC32 FCS error detection (Switches, Ethernet).\n"
-            "• Layer 1 (Physical): Raw transmission of bitstreams over physical copper, fiber, or radio media."
+            "LAS 7 CAPAS DEL MODELO OSI (GUÍA BASADA EN DECISIONES):\n\n"
+            "• Capa 7 (Aplicación): Interfaz humana y servicios de red (HTTP/HTTPS, DNS, FTP, chat).\n"
+            "• Capa 6 (Presentación): Codificaciones (UTF-8, ASCII), compresión (H.264), cifrado (TLS/AES). Un desajuste causa mojibake.\n"
+            "• Capa 5 (Sesión): Establecimiento, autenticación y cierre de canales de comunicación (SIP, Keep-Alive, tokens).\n"
+            "• Capa 4 (Transporte): Protocolo de extremo a extremo (TCP fiable/ordenado vs UDP de baja latencia, puertos).\n"
+            "• Capa 3 (Red): Enrutamiento y direccionamiento IP lógico entre subredes interconectadas (routers, gateways, TTL).\n"
+            "• Capa 2 (Enlace de datos): Direccionamiento MAC físico, encapsulado local y detección de errores CRC32/FCS (switches, Ethernet).\n"
+            "• Capa 1 (Física): Transmisión cruda de bits por cobre, fibra o radio."
         )
         lbl = tk.Label(parent, text=guide_text, font=theme.FONT_SMALL, fg=theme.TEXT_SECONDARY, bg=theme.BG_CARD, justify=tk.LEFT)
         lbl.pack(anchor=tk.W)
@@ -272,7 +272,7 @@ class SimulatorView(tk.Frame):
 
         # Highlight current active layer card
         meta = theme.OSI_METADATA.get(decision.layer_num, {"name": f"Layer {decision.layer_num}", "color": theme.TEXT_ACCENT})
-        self.sender_stack.update_layer_status(decision.layer_num, LayerStatus.ACTIVE, "Awaiting User Decision")
+        self.sender_stack.update_layer_status(decision.layer_num, LayerStatus.ACTIVE, "Esperando decisión del usuario")
 
         # Clear existing decision widgets
         for frame in (self.decision_content, self.decision_action_frame):
@@ -369,7 +369,7 @@ class SimulatorView(tk.Frame):
 
             tk.Label(
                 input_box,
-                text=decision.input_label or "Enter Value:",
+                text=decision.input_label or "Ingresa un valor:",
                 font=theme.FONT_BODY_BOLD,
                 fg=theme.TEXT_PRIMARY,
                 bg=theme.BG_CARD
@@ -428,7 +428,7 @@ class SimulatorView(tk.Frame):
             val = self.choice_var.get()
             if not val:
                 if self.decision_feedback:
-                    self.decision_feedback.config(text="Select an option before continuing.")
+                    self.decision_feedback.config(text="Selecciona una opción antes de continuar.")
                 return
         elif self.active_decision.input_type == "TEXT_INPUT":
             val = self.entry_var.get()
@@ -495,7 +495,7 @@ class SimulatorView(tk.Frame):
         self.sender_stack.reset_all()
         self.receiver_stack.reset_all()
         self.net_canvas.update_stats(0, 0, 0)
-        self.event_log.log("INFO", "↺", "Mission reset. Preparing initial decision...", None)
+        self.event_log.log("INFO", "↺", "Misión reiniciada. Preparando decisión inicial...", None)
         self.mission.start_mission()
 
     def _handle_back_click(self):

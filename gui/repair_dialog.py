@@ -19,7 +19,7 @@ class RepairDialog(tk.Toplevel):
 
         meta = theme.OSI_METADATA.get(issue.layer_num, {"name": f"Layer {issue.layer_num}", "color": theme.COLOR_ERROR})
 
-        self.title(f"Diagnostic & Repair: Layer {issue.layer_num} ({meta['name']})")
+        self.title(f"Diagnóstico y reparación: Capa {issue.layer_num} ({meta['name']})")
         self.geometry("620x540")
         self.resizable(False, False)
         self.configure(bg=theme.BG_DARK)
@@ -39,8 +39,8 @@ class RepairDialog(tk.Toplevel):
         banner = tk.Frame(self, bg="#3b1111", padx=16, pady=12, bd=1, relief=tk.SOLID)
         banner.pack(fill=tk.X)
 
-        tk.Label(banner, text=f"🔧 TROUBLESHOOTING: LAYER {issue.layer_num} — {meta['name'].upper()}", font=theme.FONT_TITLE, fg="#fca5a5", bg="#3b1111").pack(anchor=tk.W)
-        tk.Label(banner, text=f"Problem: {issue.title}", font=theme.FONT_SUBTITLE, fg="#ffffff", bg="#3b1111").pack(anchor=tk.W, pady=(2, 0))
+        tk.Label(banner, text=f"🔧 DIAGNÓSTICO: CAPA {issue.layer_num} — {meta['name'].upper()}", font=theme.FONT_TITLE, fg="#fca5a5", bg="#3b1111").pack(anchor=tk.W)
+        tk.Label(banner, text=f"Problema: {issue.title}", font=theme.FONT_SUBTITLE, fg="#ffffff", bg="#3b1111").pack(anchor=tk.W, pady=(2, 0))
 
         # Main Body
         body = tk.Frame(self, bg=theme.BG_DARK, padx=16, pady=12)
@@ -50,11 +50,11 @@ class RepairDialog(tk.Toplevel):
         desc_box = tk.Frame(body, bg=theme.BG_PANEL, bd=1, relief=tk.SOLID, padx=12, pady=10)
         desc_box.pack(fill=tk.X, pady=(0, 10))
 
-        tk.Label(desc_box, text="Diagnosis Details:", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_ACCENT, bg=theme.BG_PANEL).pack(anchor=tk.W)
+        tk.Label(desc_box, text="Detalles del diagnóstico:", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_ACCENT, bg=theme.BG_PANEL).pack(anchor=tk.W)
         tk.Label(desc_box, text=issue.details, font=theme.FONT_SMALL, fg=theme.TEXT_SECONDARY, bg=theme.BG_PANEL, justify=tk.LEFT, wraplength=560).pack(anchor=tk.W, pady=(4, 0))
 
         # Options Container
-        tk.Label(body, text="Select Corrective Action:", font=theme.FONT_SUBTITLE, fg=theme.TEXT_PRIMARY, bg=theme.BG_DARK).pack(anchor=tk.W, pady=(6, 4))
+        tk.Label(body, text="Selecciona una acción correctiva:", font=theme.FONT_SUBTITLE, fg=theme.TEXT_PRIMARY, bg=theme.BG_DARK).pack(anchor=tk.W, pady=(6, 4))
 
         self.options_frame = tk.Frame(body, bg=theme.BG_DARK)
         self.options_frame.pack(fill=tk.BOTH, expand=True)
@@ -89,7 +89,7 @@ class RepairDialog(tk.Toplevel):
 
         btn_apply = tk.Button(
             btn_frame,
-            text="Apply Fix & Resume Transmission ▶",
+            text="Aplicar corrección y reanudar transmisión ▶",
             font=theme.FONT_BODY_BOLD,
             bg=theme.COLOR_SUCCESS,
             fg="#ffffff",
@@ -105,7 +105,7 @@ class RepairDialog(tk.Toplevel):
 
         btn_cancel = tk.Button(
             btn_frame,
-            text="Close / Inspect Later",
+            text="Cerrar / revisar después",
             font=theme.FONT_SMALL,
             bg=theme.BG_CARD,
             fg=theme.TEXT_MUTED,
@@ -129,7 +129,7 @@ class RepairDialog(tk.Toplevel):
                 break
 
         if not selected_opt:
-            self.feedback_lbl.config(text="Please choose a corrective action.", fg=theme.COLOR_WARNING)
+            self.feedback_lbl.config(text="Elige una acción correctiva.", fg=theme.COLOR_WARNING)
             return
 
         if selected_opt.is_correct:

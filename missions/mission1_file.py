@@ -21,16 +21,16 @@ class MissionFileTransfer(BaseMission):
     def __init__(self):
         super().__init__(
             mission_id=1,
-            title="Send a Large File",
+            title="Enviar un archivo grande",
             icon="📁",
-            subtitle="Deliver a 500 MB video to Person B with reliability decisions",
-            objective="Deliver 'video.mp4' (500 MB) across the network. Choose protocol parameters, conduct the 3-way handshake, and handle real router packet drops.",
+            subtitle="Entregar un video de 500 MB a Persona B con decisiones de confiabilidad",
+            objective="Entregar 'video.mp4' (500 MB) por la red. Elige parámetros del protocolo, realiza el three-way handshake y maneja pérdidas reales de paquetes.",
             concepts=[
-                "Segmentation vs MTU Limits",
-                "TCP 3-Way Handshake (SYN/ACK)",
-                "TCP vs UDP Reliability Trade-offs",
-                "Packet Loss & Fast Retransmission",
-                "End-to-End File Integrity (MD5/FCS)"
+                "Segmentación vs límites MTU",
+                "Handshake TCP de 3 vías (SYN/ACK)",
+                "Confiabilidad: TCP vs UDP",
+                "Pérdida de paquetes y retransmisión rápida",
+                "Integridad de archivo extremo a extremo (MD5/FCS)"
             ]
         )
         self.selected_protocol = "TCP"  # "TCP" or "UDP"
@@ -50,7 +50,7 @@ class MissionFileTransfer(BaseMission):
 
         tk.Label(
             container,
-            text="📁 Receiver (Person B) - File Reassembly Monitor",
+            text="📁 Receptor (Persona B) - Monitor de reensamblado",
             font=theme.FONT_SUBTITLE,
             fg=theme.TEXT_PRIMARY,
             bg=theme.BG_PANEL
@@ -61,7 +61,7 @@ class MissionFileTransfer(BaseMission):
 
         self.info_lbl = tk.Label(
             file_card,
-            text="Target File: video.mp4 | Size: 500 MB | Chunks: 4 (125 MB each)",
+            text="Archivo objetivo: video.mp4 | Tamaño: 500 MB | Bloques: 4 (125 MB c/u)",
             font=theme.FONT_BODY,
             fg=theme.TEXT_SECONDARY,
             bg=theme.BG_CARD
@@ -77,8 +77,8 @@ class MissionFileTransfer(BaseMission):
             c_frame = tk.Frame(chunks_box, bg=theme.BG_CARD, bd=1, relief=tk.GROOVE, padx=10, pady=6)
             c_frame.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=4)
 
-            tk.Label(c_frame, text=f"Chunk #{i+1}", font=theme.FONT_TINY, fg=theme.TEXT_MUTED, bg=theme.BG_CARD).pack()
-            lbl_st = tk.Label(c_frame, text="Waiting...", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_MUTED, bg=theme.BG_CARD)
+            tk.Label(c_frame, text=f"Bloque #{i+1}", font=theme.FONT_TINY, fg=theme.TEXT_MUTED, bg=theme.BG_CARD).pack()
+            lbl_st = tk.Label(c_frame, text="Esperando...", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_MUTED, bg=theme.BG_CARD)
             lbl_st.pack()
             self.chunk_labels.append(lbl_st)
 
@@ -88,7 +88,7 @@ class MissionFileTransfer(BaseMission):
 
         self.status_lbl = tk.Label(
             container,
-            text="Awaiting user decisions to begin transmission...",
+            text="Esperando decisiones del usuario para iniciar la transmisión...",
             font=theme.FONT_BODY_BOLD,
             fg=theme.TEXT_MUTED,
             bg=theme.BG_PANEL
@@ -106,8 +106,8 @@ class MissionFileTransfer(BaseMission):
             StageDecision(
                 stage_id="l7_packaging",
                 layer_num=7,
-                title="Application Layer — Data Preparation",
-                prompt="Person A has a 500 MB video file. How should the application prepare this data for network transmission?",
+                title="Capa de Aplicación — Preparación de datos",
+                prompt="Persona A tiene un archivo de video de 500 MB. ¿Cómo debe prepararlo la aplicación para transmitirlo?",
                 explanation="Physical network links cannot transmit an arbitrary 500 MB stream in one piece due to Maximum Transmission Unit (MTU) hardware limits (typically 1500 bytes per Ethernet frame).",
                 input_type="CHOICE",
                 options=[
@@ -123,14 +123,14 @@ class MissionFileTransfer(BaseMission):
                     }
                 ],
                 default_value="segment",
-                button_label="Encapsulate Layer 7 ▶"
+                button_label="Encapsular capa 7 ▶"
             ),
             # Stage 1: L4 Protocol Decision
             StageDecision(
                 stage_id="l4_protocol",
                 layer_num=4,
-                title="Transport Layer — Protocol Selection",
-                prompt="Which Transport protocol should manage the delivery of this 500 MB video file?",
+                title="Capa de Transporte — Selección de protocolo",
+                prompt="¿Qué protocolo de transporte debe gestionar la entrega de este video de 500 MB?",
                 explanation="TCP guarantees ordered and complete delivery via acknowledgments, while UDP sends datagrams without verifying delivery or retransmitting losses.",
                 input_type="CHOICE",
                 options=[
@@ -146,13 +146,13 @@ class MissionFileTransfer(BaseMission):
                     }
                 ],
                 default_value="tcp",
-                button_label="Configure Transport Protocol ▶"
+                button_label="Configurar protocolo de transporte ▶"
             ),
             # Stage 2: Handshake / Connection
             StageDecision(
                 stage_id="l4_handshake",
                 layer_num=4,
-                title="Transport Layer — Connection Establishment",
+                title="Capa de Transporte — Establecimiento de conexión",
                 prompt="To establish a reliable transport connection, Person A must begin the 3-Way Handshake. Which TCP control flag must be sent first?",
                 explanation="The TCP handshake synchronizes sequence numbers between sender and receiver before any user data payload is transmitted.",
                 input_type="CHOICE",
@@ -174,13 +174,13 @@ class MissionFileTransfer(BaseMission):
                     }
                 ],
                 default_value="syn",
-                button_label="Send Control Flag ▶"
+                button_label="Enviar bandera de control ▶"
             ),
             # Stage 3: L3 Addressing
             StageDecision(
                 stage_id="l3_addressing",
                 layer_num=3,
-                title="Network Layer — Logical IP Addressing",
+                title="Capa de Red — Direccionamiento IP lógico",
                 prompt="Specify Person B's destination IPv4 address for routing across core routers:",
                 explanation="Layer 3 routers use the destination IP header to determine the next-hop interface along the path.",
                 input_type="CHOICE",
@@ -197,13 +197,13 @@ class MissionFileTransfer(BaseMission):
                     }
                 ],
                 default_value="192.168.1.25",
-                button_label="Encapsulate IP Packet & Transmit ▶"
+                button_label="Encapsular paquete IP y transmitir ▶"
             ),
             # Stage 4: Network Transmission & Packet Loss reaction
             StageDecision(
                 stage_id="net_loss_response",
                 layer_num=4,
-                title="Network Event — Handling Router Drop",
+                title="Evento de red — Manejo de pérdida en router",
                 prompt="Core Router buffer congested! Chunk #3 was DROPPED. How should Person A react?",
                 explanation="In reliable networks, packet loss must be detected and resolved to prevent file corruption.",
                 input_type="CHOICE",
@@ -220,18 +220,18 @@ class MissionFileTransfer(BaseMission):
                     }
                 ],
                 default_value="retransmit",
-                button_label="Apply Transmission Action ▶"
+                button_label="Aplicar acción de transmisión ▶"
             ),
             # Stage 5: Final Decapsulation & Integrity Check
             StageDecision(
                 stage_id="l7_verify",
                 layer_num=7,
-                title="Receiver Decapsulation & Integrity Verification",
+                title="Desencapsulación del receptor y verificación de integridad",
                 prompt="All received data is arriving at Person B. How should Person B's Application Layer finalize the file?",
                 explanation="When all layers decapsulate, the application verifies the cryptographic hash against the sender's original manifest.",
                 input_type="ACTION",
                 options=[],
-                button_label="Verify MD5 Checksum & Save Video ▶"
+                button_label="Verificar checksum MD5 y guardar video ▶"
             )
         ]
 

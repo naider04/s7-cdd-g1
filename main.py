@@ -19,7 +19,7 @@ from gui.simulator_view import SimulatorView
 class OsiSimulatorApp:
     def __init__(self, root: tk.Tk):
         self.root = root
-        self.root.title("OSI Communication Simulator - Interactive Educational Network Lab")
+        self.root.title("Simulador de Comunicación OSI - Laboratorio Educativo Interactivo")
         self.root.geometry("1240x720")
         self.root.minsize(1020, 700)
         self.root.configure(bg=theme.BG_DARK)
