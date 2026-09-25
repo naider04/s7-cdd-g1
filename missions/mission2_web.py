@@ -384,19 +384,19 @@ class MissionWebAccess(BaseMission):
                     self.ssl_badge.config(text="⚠ HTTP (Not Secure)", fg=theme.COLOR_WARNING)
 
             if self.browser_status:
-                self.browser_status.config(text="200 OK (Loaded)", fg=theme.COLOR_SUCCESS)
+                self.browser_status.config(text="200 OK (Cargado)", fg=theme.COLOR_SUCCESS)
 
             self.render_webpage()
 
             self.complete_mission({
-                "Target Hostname": self.target_url,
-                "DNS Server": f"{self.dns_server} (UDP 53)",
-                "Resolved IP": self.resolved_ip,
-                "Protocol / Port": f"{self.selected_protocol} (Port {self.selected_port})",
-                "Routing Path": f"LAN Host -> Gateway {self.gateway_ip} -> Internet -> Server {self.resolved_ip}",
-                "Decisions Made": self.decisions_made,
-                "Errors Diagnosed & Fixed": self.errors_repaired,
-                "Result": "Webpage Rendered Cleanly"
+                "Host objetivo": self.target_url,
+                "Servidor DNS": f"{self.dns_server} (UDP 53)",
+                "IP resuelta": self.resolved_ip,
+                "Protocolo / puerto": f"{self.selected_protocol} (Puerto {self.selected_port})",
+                "Ruta de enrutamiento": f"Host LAN -> Gateway {self.gateway_ip} -> Internet -> Servidor {self.resolved_ip}",
+                "Decisiones tomadas": self.decisions_made,
+                "Errores diagnosticados y corregidos": self.errors_repaired,
+                "Resultado": "Página web renderizada correctamente"
             })
 
     def _transmit_web_request(self):

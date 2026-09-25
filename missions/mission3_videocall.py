@@ -78,32 +78,32 @@ class MissionVideoCall(BaseMission):
 
         # Person A (Local Camera)
         c.create_rectangle(10, 10, half_w - 5, h - 10, fill="#222733", outline=theme.OSI_COLORS[5], width=1)
-        c.create_text(20, 25, text="👤 Person A (Local Feed - 720p)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
+        c.create_text(20, 25, text="👤 Persona A (video local - 720p)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
         c.create_oval(half_w/2 - 25, h/2 - 35, half_w/2 + 25, h/2 + 15, fill="#3b82f6", outline="")
         c.create_text(half_w/2, h/2 - 10, text="👤", font=(theme.FONT_FAMILY, 24))
-        c.create_text(half_w/2, h - 25, text="Audio: 🎙 ACTIVE (Opus Codec)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
+        c.create_text(half_w/2, h - 25, text="Audio: 🎙 ACTIVO (códec Opus)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
 
         # Person B (Remote Stream Received)
         c.create_rectangle(half_w + 5, 10, w - 10, h - 10, fill="#222733", outline=theme.OSI_COLORS[3], width=1)
-        c.create_text(half_w + 15, 25, text="👤 Person B (Remote Stream Received)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
+        c.create_text(half_w + 15, 25, text="👤 Persona B (flujo remoto recibido)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
 
         cx = half_w + (w - half_w)/2
         if state == "STANDBY":
-            c.create_text(cx, h/2, text="Call not started (Awaiting Decisions)", font=theme.FONT_BODY, fill=theme.TEXT_MUTED)
+            c.create_text(cx, h/2, text="Llamada no iniciada (esperando decisiones)", font=theme.FONT_BODY, fill=theme.TEXT_MUTED)
         elif state == "UDP_GOOD":
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#10b981", outline="")
             c.create_text(cx, h/2 - 10, text="👤", font=(theme.FONT_FAMILY, 24))
-            c.create_text(cx, h - 25, text="✓ Smooth Real-Time Playback (30 FPS, 22ms)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
+            c.create_text(cx, h - 25, text="✓ Reproducción fluida en tiempo real (30 FPS, 22 ms)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
         elif state == "UDP_GLITCH":
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#059669", outline="")
             c.create_text(cx, h/2 - 10, text="👤", font=(theme.FONT_FAMILY, 24))
             c.create_rectangle(cx - 20, h/2 - 15, cx + 20, h/2 - 5, fill="#f59e0b", outline="")
-            c.create_text(cx, h - 25, text="⚠ Frame #3 Dropped -> Skipped (Call Intact!)", font=theme.FONT_TINY, fill=theme.COLOR_WARNING)
+            c.create_text(cx, h - 25, text="⚠ Cuadro #3 perdido -> omitido (¡llamada intacta!)", font=theme.FONT_TINY, fill=theme.COLOR_WARNING)
         elif state == "TCP_FROZEN":
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#dc2626", outline="")
             c.create_text(cx, h/2 - 10, text="❄️", font=(theme.FONT_FAMILY, 24))
-            c.create_text(cx, h/2 + 25, text="STREAM FROZEN (Lag: 1.45s)", font=theme.FONT_SMALL, fill=theme.COLOR_ERROR)
-            c.create_text(cx, h - 25, text="✗ Head-of-Line Blocking Waiting for Retransmit", font=theme.FONT_TINY, fill=theme.COLOR_ERROR)
+            c.create_text(cx, h/2 + 25, text="TRANSMISIÓN CONGELADA (Retardo: 1.45 s)", font=theme.FONT_SMALL, fill=theme.COLOR_ERROR)
+            c.create_text(cx, h - 25, text="✗ Bloqueo Head-of-Line esperando retransmisión", font=theme.FONT_TINY, fill=theme.COLOR_ERROR)
 
     def load_initial_stage(self):
         self.current_stage_index = 0
@@ -395,13 +395,13 @@ class MissionVideoCall(BaseMission):
             self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Decapsulated & Streaming")
 
         self.complete_mission({
-            "Session Type": "Real-Time Video Call (WebRTC)",
-            "Video Codec (L6)": self.selected_codec,
-            "Transport Protocol (L4)": self.selected_protocol,
-            "End-to-End Latency": f"{self.latency_ms} ms",
-            "Decisions Made": self.decisions_made,
-            "Errors Diagnosed & Fixed": self.errors_repaired,
-            "Key Lesson": "Interactive multimedia requires UDP because timeliness is more vital than 100% reliability. Head-of-line blocking in TCP makes live conversation impossible."
+            "Tipo de sesión": "Videollamada en tiempo real (WebRTC)",
+            "Códec de video (L6)": self.selected_codec,
+            "Protocolo de transporte (L4)": self.selected_protocol,
+            "Latencia extremo a extremo": f"{self.latency_ms} ms",
+            "Decisiones tomadas": self.decisions_made,
+            "Errores diagnosticados y corregidos": self.errors_repaired,
+            "Lección clave": "El multimedia interactivo requiere UDP porque la inmediatez es más importante que la confiabilidad del 100%. El bloqueo Head-of-Line en TCP vuelve inviable una conversación en vivo."
         })
 
     def _advance_to_next_stage(self):

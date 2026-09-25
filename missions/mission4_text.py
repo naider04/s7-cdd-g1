@@ -302,11 +302,11 @@ class MissionTextMessage(BaseMission):
 
     def _finish_text_mission(self):
         self.complete_mission({
-            "Original User Message": self.raw_message,
-            "Presentation Encoding": "UTF-8 (Variable-Length Unicode)",
-            "Decisions Made": self.decisions_made,
-            "Errors Diagnosed & Fixed": self.errors_repaired,
-            "Key Lesson": "Layer 6 (Presentation) governs data interpretation. Lower layers can deliver 100% of packets, but if character representations disagree, the application receives Mojibake."
+            "Mensaje original del usuario": self.raw_message,
+            "Codificación de presentación": "UTF-8 (Unicode de longitud variable)",
+            "Decisiones tomadas": self.decisions_made,
+            "Errores diagnosticados y corregidos": self.errors_repaired,
+            "Lección clave": "La capa 6 (Presentación) gobierna la interpretación de datos. Las capas inferiores pueden entregar el 100% de los paquetes, pero si la representación de caracteres no coincide, la aplicación recibe mojibake."
         })
 
     def _advance_to_next_stage(self):

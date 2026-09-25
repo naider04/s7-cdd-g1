@@ -491,14 +491,14 @@ class MissionFileTransfer(BaseMission):
                 self.status_lbl.config(text="✓ File Transfer 100% Complete & Verified! All decisions succeeded.", fg=theme.COLOR_SUCCESS)
 
             self.complete_mission({
-                "File Name": "video.mp4",
-                "Total Size": "500 MB",
-                "Protocol Used": self.selected_protocol,
-                "Handshake": "SYN → SYN-ACK → ACK Verified",
-                "Packets Sent/Recv": f"{self.packets_sent} sent / {self.packets_received} recv",
-                "Decisions Made": self.decisions_made,
-                "Errors Diagnosed & Fixed": self.errors_repaired,
-                "Key Lesson": "File transfers require segmentation and reliable transport (TCP) to guarantee that dropped packets are retransmitted."
+                "Nombre del archivo": "video.mp4",
+                "Tamaño total": "500 MB",
+                "Protocolo usado": self.selected_protocol,
+                "Handshake": "SYN → SYN-ACK → ACK verificado",
+                "Paquetes enviados/recibidos": f"{self.packets_sent} enviados / {self.packets_received} recibidos",
+                "Decisiones tomadas": self.decisions_made,
+                "Errores diagnosticados y corregidos": self.errors_repaired,
+                "Lección clave": "Las transferencias de archivos requieren segmentación y transporte confiable (TCP) para garantizar la retransmisión de paquetes perdidos."
             })
 
     def _transmit_initial_chunks(self):
@@ -540,17 +540,17 @@ class MissionFileTransfer(BaseMission):
         for i, r in enumerate(self.chunks_received):
             if i < len(self.chunk_labels):
                 if r:
-                    self.chunk_labels[i].config(text="✓ RECEIVED", fg=theme.COLOR_SUCCESS)
+                    self.chunk_labels[i].config(text="✓ RECIBIDO", fg=theme.COLOR_SUCCESS)
                 elif self.packets_sent > (i + 1) and not r:
-                    self.chunk_labels[i].config(text="✗ DROPPED", fg=theme.COLOR_ERROR)
+                    self.chunk_labels[i].config(text="✗ PERDIDO", fg=theme.COLOR_ERROR)
                 else:
-                    self.chunk_labels[i].config(text="Waiting...", fg=theme.TEXT_MUTED)
+                    self.chunk_labels[i].config(text="Esperando...", fg=theme.TEXT_MUTED)
 
         if self.status_lbl:
             if rec_count == 4:
-                self.status_lbl.config(text="✓ All 4 Chunks Received! Awaiting MD5 verification.", fg=theme.COLOR_SUCCESS)
+                self.status_lbl.config(text="✓ ¡Los 4 bloques fueron recibidos! Esperando verificación MD5.", fg=theme.COLOR_SUCCESS)
             elif rec_count > 0:
-                self.status_lbl.config(text=f"Receiving chunks... {rec_count}/4 ({int(pct)}% Complete)", fg=theme.TEXT_ACCENT)
+                self.status_lbl.config(text=f"Recibiendo bloques... {rec_count}/4 ({int(pct)}% completado)", fg=theme.TEXT_ACCENT)
 
     def _advance_to_next_stage(self):
         self.current_stage_index += 1
