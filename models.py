@@ -19,7 +19,7 @@ class LayerState:
     layer_num: int
     name: str
     status: LayerStatus = LayerStatus.IDLE
-    status_text: str = "Ready"
+    status_text: str = "Listo"
     has_error: bool = False
     details: Dict[str, Any] = field(default_factory=dict)
     added_header: str = ""
@@ -104,7 +104,7 @@ class StageDecision:
     # Each option is a dict: {"id": str, "title": str, "desc": str}
     default_value: str = ""
     input_label: str = ""
-    button_label: str = "Submit Decision & Proceed ▶"
+    button_label: str = "Enviar decisión y continuar ▶"
 
 
 @dataclass

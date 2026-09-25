@@ -20,16 +20,16 @@ class MissionTextMessage(BaseMission):
     def __init__(self):
         super().__init__(
             mission_id=4,
-            title="Send a Text Message",
+            title="Enviar un mensaje de texto",
             icon="💬",
-            subtitle="Transmit custom multilingual text with character encoding decisions",
-            objective="Type a message with accents or emojis. Choose character encodings and encryption, and observe what happens when endpoints disagree on data representation.",
+            subtitle="Transmitir texto multilingüe con decisiones de codificación",
+            objective="Escribe un mensaje con acentos o emojis. Elige codificación y cifrado, y observa qué pasa cuando los extremos no coinciden en la representación de datos.",
             concepts=[
-                "Presentation Layer (L6) Data Representation",
-                "Character Encodings (UTF-8 Multibyte vs 7-Bit ASCII)",
-                "Mojibake Encoding Mismatch (Latin-1 vs UTF-8)",
-                "Encoding vs Encryption Distinction",
-                "End-to-End Chat Reconstruction"
+                "Representación de datos en capa de presentación (L6)",
+                "Codificaciones de caracteres (UTF-8 multibyte vs ASCII de 7 bits)",
+                "Desajuste de codificación y mojibake (Latin-1 vs UTF-8)",
+                "Diferencia entre codificación y cifrado",
+                "Reconstrucción de chat extremo a extremo"
             ]
         )
         self.raw_message = "¡Hola María! ¿Cómo estás? 🚀"
@@ -48,9 +48,9 @@ class MissionTextMessage(BaseMission):
         top = tk.Frame(container, bg=theme.BG_DARK, padx=10, pady=6, bd=1, relief=tk.SOLID)
         top.pack(fill=tk.X, pady=(0, 6))
 
-        tk.Label(top, text="💬 Person B - Smartphone Messenger", font=theme.FONT_SUBTITLE, fg=theme.TEXT_PRIMARY, bg=theme.BG_DARK).pack(side=tk.LEFT)
+        tk.Label(top, text="💬 Persona B - Mensajería del teléfono", font=theme.FONT_SUBTITLE, fg=theme.TEXT_PRIMARY, bg=theme.BG_DARK).pack(side=tk.LEFT)
 
-        self.status_chat_lbl = tk.Label(top, text="Awaiting Message...", font=theme.FONT_SMALL, fg=theme.TEXT_MUTED, bg=theme.BG_DARK)
+        self.status_chat_lbl = tk.Label(top, text="Esperando mensaje...", font=theme.FONT_SMALL, fg=theme.TEXT_MUTED, bg=theme.BG_DARK)
         self.status_chat_lbl.pack(side=tk.RIGHT)
 
         # Messenger Window
@@ -67,7 +67,7 @@ class MissionTextMessage(BaseMission):
             return
         for w in self.chat_bubble_box.winfo_children():
             w.destroy()
-        tk.Label(self.chat_bubble_box, text="No messages received yet. Submit decisions to transmit text.", font=theme.FONT_BODY, fg=theme.TEXT_MUTED, bg="#0d1117").pack(pady=40)
+        tk.Label(self.chat_bubble_box, text="Aún no se recibieron mensajes. Envía decisiones para transmitir texto.", font=theme.FONT_BODY, fg=theme.TEXT_MUTED, bg="#0d1117").pack(pady=40)
 
     def render_chat_message(self, text: str, is_corrupted: bool = False):
         if not self.chat_bubble_box:
@@ -78,7 +78,7 @@ class MissionTextMessage(BaseMission):
         bubble = tk.Frame(self.chat_bubble_box, bg="#1e293b" if not is_corrupted else "#451a1a", padx=12, pady=10, bd=1, relief=tk.SOLID)
         bubble.pack(anchor=tk.W, pady=10)
 
-        sender_lbl = tk.Label(bubble, text="Person A", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_ACCENT, bg=bubble['bg'])
+        sender_lbl = tk.Label(bubble, text="Persona A", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_ACCENT, bg=bubble['bg'])
         sender_lbl.pack(anchor=tk.W)
 
         msg_lbl = tk.Label(bubble, text=text, font=(theme.FONT_FAMILY, 13), fg=theme.COLOR_ERROR if is_corrupted else theme.TEXT_PRIMARY, bg=bubble['bg'])
@@ -88,9 +88,9 @@ class MissionTextMessage(BaseMission):
         meta.pack(fill=tk.X)
 
         if is_corrupted:
-            tk.Label(meta, text="⚠ Mojibake Encoding Failure: Byte mismatch", font=theme.FONT_TINY, fg=theme.COLOR_ERROR, bg=bubble['bg']).pack(side=tk.LEFT)
+            tk.Label(meta, text="⚠ Fallo de codificación mojibake: bytes incompatibles", font=theme.FONT_TINY, fg=theme.COLOR_ERROR, bg=bubble['bg']).pack(side=tk.LEFT)
         else:
-            tk.Label(meta, text="✓✓ Delivered & Decoded Cleanly (UTF-8)", font=theme.FONT_TINY, fg=theme.COLOR_SUCCESS, bg=bubble['bg']).pack(side=tk.LEFT)
+            tk.Label(meta, text="✓✓ Entregado y decodificado correctamente (UTF-8)", font=theme.FONT_TINY, fg=theme.COLOR_SUCCESS, bg=bubble['bg']).pack(side=tk.LEFT)
 
     def load_initial_stage(self):
         self.current_stage_index = 0
@@ -99,19 +99,19 @@ class MissionTextMessage(BaseMission):
             StageDecision(
                 stage_id="l7_text_input",
                 layer_num=7,
-                title="Application Layer — Compose Message",
+                title="Capa de Aplicación — Redactar mensaje",
                 prompt="Type the text message Person A wants to transmit to Person B (include accents or emojis to test Unicode support):",
                 explanation="The user interface in Layer 7 captures human input as abstract character strings.",
                 input_type="TEXT_INPUT",
                 default_value=self.raw_message,
-                input_label="Message text:",
-                button_label="Capture Text & Proceed to Layer 6 ▶"
+                input_label="Texto del mensaje:",
+                button_label="Capturar texto y continuar a la capa 6 ▶"
             ),
             # Stage 1: L6 Character Encoding Choice
             StageDecision(
                 stage_id="l6_encoding",
                 layer_num=6,
-                title="Presentation Layer — Character Encoding",
+                title="Capa de Presentación — Codificación de caracteres",
                 prompt="How should Layer 6 serialize the text characters into binary bytes?",
                 explanation="Encoding maps human characters to binary code points. ASCII is 7-bit (128 English characters), while UTF-8 supports over 149,000 international characters.",
                 input_type="CHOICE",
@@ -128,13 +128,13 @@ class MissionTextMessage(BaseMission):
                     }
                 ],
                 default_value="utf8",
-                button_label="Apply Encoding Format ▶"
+                button_label="Aplicar formato de codificación ▶"
             ),
             # Stage 2: L6 Receiver Decoding Mode
             StageDecision(
                 stage_id="l6_receiver_decode",
                 layer_num=6,
-                title="Presentation Layer — Receiver Interpretation",
+                title="Capa de Presentación — Interpretación del receptor",
                 prompt="Which decoding standard should Person B's Presentation Layer use to reconstruct the received bytes?",
                 explanation="If the sender and receiver disagree on the representation, raw byte values will be mapped to the wrong glyphs, producing Mojibake.",
                 input_type="CHOICE",
@@ -151,7 +151,7 @@ class MissionTextMessage(BaseMission):
                     }
                 ],
                 default_value="match_utf8",
-                button_label="Transmit Across Network & Decode ▶"
+                button_label="Transmitir por red y decodificar ▶"
             )
         ]
 
@@ -302,11 +302,11 @@ class MissionTextMessage(BaseMission):
 
     def _finish_text_mission(self):
         self.complete_mission({
-            "Original User Message": self.raw_message,
-            "Presentation Encoding": "UTF-8 (Variable-Length Unicode)",
-            "Decisions Made": self.decisions_made,
-            "Errors Diagnosed & Fixed": self.errors_repaired,
-            "Key Lesson": "Layer 6 (Presentation) governs data interpretation. Lower layers can deliver 100% of packets, but if character representations disagree, the application receives Mojibake."
+            "Mensaje original del usuario": self.raw_message,
+            "Codificación de presentación": "UTF-8 (Unicode de longitud variable)",
+            "Decisiones tomadas": self.decisions_made,
+            "Errores diagnosticados y corregidos": self.errors_repaired,
+            "Lección clave": "La capa 6 (Presentación) gobierna la interpretación de datos. Las capas inferiores pueden entregar el 100% de los paquetes, pero si la representación de caracteres no coincide, la aplicación recibe mojibake."
         })
 
     def _advance_to_next_stage(self):

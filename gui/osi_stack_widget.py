@@ -63,7 +63,7 @@ class LayerCard(tk.Frame):
         # Wrench button (hidden by default)
         self.btn_wrench = tk.Button(
             row1,
-            text="🔧 REPAIR",
+            text="🔧 REPARAR",
             font=theme.FONT_TINY,
             bg=theme.COLOR_ERROR,
             fg="#ffffff",
@@ -80,7 +80,7 @@ class LayerCard(tk.Frame):
         # Row 2: Status text
         self.lbl_status = tk.Label(
             content,
-            text="Idle",
+            text="Inactivo",
             font=theme.FONT_TINY,
             fg=theme.TEXT_MUTED,
             bg=theme.BG_CARD,
@@ -170,7 +170,7 @@ class OsiStackWidget(tk.Frame):
             bg=theme.BG_PANEL
         ).pack(anchor=tk.W)
 
-        direction_text = "ENCAPSULATION: L7 → L1 ↓" if is_sender else "DECAPSULATION: L1 → L7 ↑"
+        direction_text = "ENCAPSULACIÓN: L7 → L1 ↓" if is_sender else "DESENCAPSULACIÓN: L1 → L7 ↑"
         tk.Label(
             header,
             text=f"{subtitle} | {direction_text}",
@@ -203,4 +203,4 @@ class OsiStackWidget(tk.Frame):
 
     def reset_all(self):
         for card in self.cards.values():
-            card.set_status(LayerStatus.IDLE, "Ready", False)
+            card.set_status(LayerStatus.IDLE, "Listo", False)

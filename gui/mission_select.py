@@ -20,7 +20,7 @@ class MissionSelectView(tk.Frame):
 
         title_lbl = tk.Label(
             header,
-            text="OSI COMMUNICATION SIMULATOR",
+            text="SIMULADOR DE COMUNICACIÓN OSI",
             font=theme.FONT_APP_TITLE,
             fg=theme.TEXT_PRIMARY,
             bg=theme.BG_PANEL
@@ -29,7 +29,7 @@ class MissionSelectView(tk.Frame):
 
         subtitle_lbl = tk.Label(
             header,
-            text="Interactive Educational Simulator of Computer Network Communication & Troubleshooting based on the 7 OSI Layers",
+            text="Simulador educativo interactivo de comunicación y diagnóstico de redes basado en las 7 capas OSI",
             font=theme.FONT_SMALL,
             fg=theme.TEXT_ACCENT,
             bg=theme.BG_PANEL
@@ -38,7 +38,7 @@ class MissionSelectView(tk.Frame):
 
         info_lbl = tk.Label(
             header,
-            text="Choose any of the 4 core missions below. At each OSI layer, you must make real protocol decisions, configure addresses, or type input. Your choices have immediate network consequences!",
+            text="Elige cualquiera de las 4 misiones principales. En cada capa OSI deberás tomar decisiones reales de protocolo, configurar direcciones o escribir datos. ¡Tus elecciones tienen consecuencias inmediatas en la red!",
             font=theme.FONT_TINY,
             fg=theme.TEXT_MUTED,
             bg=theme.BG_PANEL
@@ -84,7 +84,7 @@ class MissionSelectView(tk.Frame):
         footer = tk.Frame(self, bg=theme.BG_PANEL, padx=16, pady=8, bd=1, relief=tk.SOLID)
         footer.pack(fill=tk.X)
 
-        tk.Label(footer, text="OSI 7 LAYERS:", font=theme.FONT_TINY, fg=theme.TEXT_MUTED, bg=theme.BG_PANEL).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Label(footer, text="7 CAPAS OSI:", font=theme.FONT_TINY, fg=theme.TEXT_MUTED, bg=theme.BG_PANEL).pack(side=tk.LEFT, padx=(0, 8))
 
         for l in range(7, 0, -1):
             meta = theme.OSI_METADATA[l]
@@ -108,7 +108,7 @@ class MissionSelectView(tk.Frame):
         left.pack(side=tk.LEFT, padx=(0, 14))
 
         tk.Label(left, text=mission.icon, font=(theme.FONT_FAMILY, 24), bg=theme.BG_CARD).pack()
-        tk.Label(left, text=f"Mission #{mission.mission_id}", font=theme.FONT_TINY, fg=theme.TEXT_MUTED, bg=theme.BG_CARD).pack()
+        tk.Label(left, text=f"Misión #{mission.mission_id}", font=theme.FONT_TINY, fg=theme.TEXT_MUTED, bg=theme.BG_CARD).pack()
 
         # Middle: Title, Objective, and Concepts
         mid = tk.Frame(card, bg=theme.BG_CARD)
@@ -142,7 +142,7 @@ class MissionSelectView(tk.Frame):
 
         btn = tk.Button(
             right,
-            text="Start Mission ▶",
+            text="Iniciar misión ▶",
             font=theme.FONT_BODY_BOLD,
             bg=theme.OSI_COLORS[4],
             fg="#ffffff",

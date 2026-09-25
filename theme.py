@@ -38,51 +38,51 @@ OSI_COLORS = {
 # OSI Layer Metadata
 OSI_METADATA = {
     7: {
-        "name": "Application",
+        "name": "Aplicación",
         "pdu": "Data",
-        "description": "Network applications, user interface, HTTP, SMTP, DNS, protocols.",
+        "description": "Aplicaciones de red, interfaz de usuario, HTTP, SMTP, DNS y protocolos.",
         "icon": "📱",
         "color": OSI_COLORS[7]
     },
     6: {
-        "name": "Presentation",
+        "name": "Presentación",
         "pdu": "Data",
-        "description": "Data representation, character encoding (UTF-8/ASCII), compression, encryption.",
+        "description": "Representación de datos, codificación de caracteres (UTF-8/ASCII), compresión y cifrado.",
         "icon": "🔐",
         "color": OSI_COLORS[6]
     },
     5: {
-        "name": "Session",
+        "name": "Sesión",
         "pdu": "Data",
-        "description": "Inter-host communication, session establishment, token management, synchronization.",
+        "description": "Comunicación entre hosts, establecimiento de sesión, gestión de tokens y sincronización.",
         "icon": "🤝",
         "color": OSI_COLORS[5]
     },
     4: {
-        "name": "Transport",
+        "name": "Transporte",
         "pdu": "Segment / Datagram",
-        "description": "End-to-end connections, reliability, flow control, segmentation (TCP/UDP, Ports).",
+        "description": "Conexiones extremo a extremo, confiabilidad, control de flujo y segmentación (TCP/UDP, puertos).",
         "icon": "🚚",
         "color": OSI_COLORS[4]
     },
     3: {
-        "name": "Network",
+        "name": "Red",
         "pdu": "Packet",
-        "description": "Logical addressing (IP addresses), routing path determination across networks.",
+        "description": "Direccionamiento lógico (IP) y determinación de rutas entre redes.",
         "icon": "🌐",
         "color": OSI_COLORS[3]
     },
     2: {
-        "name": "Data Link",
+        "name": "Enlace de datos",
         "pdu": "Frame",
-        "description": "Physical addressing (MAC addresses), framing, error detection (CRC/FCS).",
+        "description": "Direccionamiento físico (MAC), tramas y detección de errores (CRC/FCS).",
         "icon": "🔗",
         "color": OSI_COLORS[2]
     },
     1: {
-        "name": "Physical",
+        "name": "Física",
         "pdu": "Bits",
-        "description": "Transmission of raw unstructured bitstream over physical medium (signals, pulses).",
+        "description": "Transmisión de flujo de bits sin estructura por medios físicos (señales, pulsos).",
         "icon": "⚡",
         "color": OSI_COLORS[1]
     },

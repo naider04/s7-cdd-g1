@@ -20,16 +20,16 @@ class MissionVideoCall(BaseMission):
     def __init__(self):
         super().__init__(
             mission_id=3,
-            title="Make a Video Call",
+            title="Hacer una videollamada",
             icon="📹",
-            subtitle="Establish live audio/video communication with transport latency trade-offs",
-            objective="Connect a real-time video call. Select video codecs, negotiate session control, and test whether TCP or UDP best supports interactive conversations.",
+            subtitle="Establecer comunicación de audio/video en vivo con decisiones de latencia",
+            objective="Conectar una videollamada en tiempo real. Elige códecs, negocia el control de sesión y evalúa si TCP o UDP soporta mejor una conversación interactiva.",
             concepts=[
-                "Real-Time Transport Protocol (RTP / UDP)",
-                "Latency vs Reliability Trade-off",
-                "Head-of-Line Blocking in TCP",
-                "Video Codec Compression (L6 H.264)",
-                "Session Signaling (SIP / SDP at L5)"
+                "Protocolo de transporte en tiempo real (RTP/UDP)",
+                "Compromiso entre latencia y confiabilidad",
+                "Bloqueo Head-of-Line en TCP",
+                "Compresión de video con códec (L6 H.264)",
+                "Señalización de sesión (SIP/SDP en L5)"
             ]
         )
         self.selected_codec = "H.264"
@@ -50,12 +50,12 @@ class MissionVideoCall(BaseMission):
         top = tk.Frame(container, bg=theme.BG_DARK, padx=10, pady=6, bd=1, relief=tk.SOLID)
         top.pack(fill=tk.X, pady=(0, 6))
 
-        tk.Label(top, text="📹 Live Video Call Session", font=theme.FONT_SUBTITLE, fg=theme.TEXT_PRIMARY, bg=theme.BG_DARK).pack(side=tk.LEFT)
+        tk.Label(top, text="📹 Sesión de videollamada en vivo", font=theme.FONT_SUBTITLE, fg=theme.TEXT_PRIMARY, bg=theme.BG_DARK).pack(side=tk.LEFT)
 
-        self.lbl_quality = tk.Label(top, text="Quality: STANDBY", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_MUTED, bg=theme.BG_DARK)
+        self.lbl_quality = tk.Label(top, text="Calidad: EN ESPERA", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_MUTED, bg=theme.BG_DARK)
         self.lbl_quality.pack(side=tk.RIGHT, padx=8)
 
-        self.lbl_latency = tk.Label(top, text="Latency: -- ms | Jitter: -- ms", font=theme.FONT_SMALL, fg=theme.TEXT_SECONDARY, bg=theme.BG_DARK)
+        self.lbl_latency = tk.Label(top, text="Latencia: -- ms | Jitter: -- ms", font=theme.FONT_SMALL, fg=theme.TEXT_SECONDARY, bg=theme.BG_DARK)
         self.lbl_latency.pack(side=tk.RIGHT, padx=15)
 
         # Dual Video Screen Simulation
@@ -78,32 +78,32 @@ class MissionVideoCall(BaseMission):
 
         # Person A (Local Camera)
         c.create_rectangle(10, 10, half_w - 5, h - 10, fill="#222733", outline=theme.OSI_COLORS[5], width=1)
-        c.create_text(20, 25, text="👤 Person A (Local Feed - 720p)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
+        c.create_text(20, 25, text="👤 Persona A (video local - 720p)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
         c.create_oval(half_w/2 - 25, h/2 - 35, half_w/2 + 25, h/2 + 15, fill="#3b82f6", outline="")
         c.create_text(half_w/2, h/2 - 10, text="👤", font=(theme.FONT_FAMILY, 24))
-        c.create_text(half_w/2, h - 25, text="Audio: 🎙 ACTIVE (Opus Codec)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
+        c.create_text(half_w/2, h - 25, text="Audio: 🎙 ACTIVO (códec Opus)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
 
         # Person B (Remote Stream Received)
         c.create_rectangle(half_w + 5, 10, w - 10, h - 10, fill="#222733", outline=theme.OSI_COLORS[3], width=1)
-        c.create_text(half_w + 15, 25, text="👤 Person B (Remote Stream Received)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
+        c.create_text(half_w + 15, 25, text="👤 Persona B (flujo remoto recibido)", font=theme.FONT_SMALL, fill=theme.TEXT_MUTED, anchor=tk.W)
 
         cx = half_w + (w - half_w)/2
         if state == "STANDBY":
-            c.create_text(cx, h/2, text="Call not started (Awaiting Decisions)", font=theme.FONT_BODY, fill=theme.TEXT_MUTED)
+            c.create_text(cx, h/2, text="Llamada no iniciada (esperando decisiones)", font=theme.FONT_BODY, fill=theme.TEXT_MUTED)
         elif state == "UDP_GOOD":
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#10b981", outline="")
             c.create_text(cx, h/2 - 10, text="👤", font=(theme.FONT_FAMILY, 24))
-            c.create_text(cx, h - 25, text="✓ Smooth Real-Time Playback (30 FPS, 22ms)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
+            c.create_text(cx, h - 25, text="✓ Reproducción fluida en tiempo real (30 FPS, 22 ms)", font=theme.FONT_TINY, fill=theme.COLOR_SUCCESS)
         elif state == "UDP_GLITCH":
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#059669", outline="")
             c.create_text(cx, h/2 - 10, text="👤", font=(theme.FONT_FAMILY, 24))
             c.create_rectangle(cx - 20, h/2 - 15, cx + 20, h/2 - 5, fill="#f59e0b", outline="")
-            c.create_text(cx, h - 25, text="⚠ Frame #3 Dropped -> Skipped (Call Intact!)", font=theme.FONT_TINY, fill=theme.COLOR_WARNING)
+            c.create_text(cx, h - 25, text="⚠ Cuadro #3 perdido -> omitido (¡llamada intacta!)", font=theme.FONT_TINY, fill=theme.COLOR_WARNING)
         elif state == "TCP_FROZEN":
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#dc2626", outline="")
             c.create_text(cx, h/2 - 10, text="❄️", font=(theme.FONT_FAMILY, 24))
-            c.create_text(cx, h/2 + 25, text="STREAM FROZEN (Lag: 1.45s)", font=theme.FONT_SMALL, fill=theme.COLOR_ERROR)
-            c.create_text(cx, h - 25, text="✗ Head-of-Line Blocking Waiting for Retransmit", font=theme.FONT_TINY, fill=theme.COLOR_ERROR)
+            c.create_text(cx, h/2 + 25, text="TRANSMISIÓN CONGELADA (Retardo: 1.45 s)", font=theme.FONT_SMALL, fill=theme.COLOR_ERROR)
+            c.create_text(cx, h - 25, text="✗ Bloqueo Head-of-Line esperando retransmisión", font=theme.FONT_TINY, fill=theme.COLOR_ERROR)
 
     def load_initial_stage(self):
         self.current_stage_index = 0
@@ -112,7 +112,7 @@ class MissionVideoCall(BaseMission):
             StageDecision(
                 stage_id="l6_codec",
                 layer_num=6,
-                title="Presentation Layer — Video Encoding & Compression",
+                title="Capa de Presentación — Codificación y compresión de video",
                 prompt="Webcam captures raw video at 720p 30fps. How should the Presentation Layer encode the video data before transmission?",
                 explanation="Raw 720p uncompressed RGB video requires over 660 Mbps of bandwidth. Video codecs (like H.264) compress video by over 98% to fit standard network connections.",
                 input_type="CHOICE",
@@ -129,13 +129,13 @@ class MissionVideoCall(BaseMission):
                     }
                 ],
                 default_value="h264",
-                button_label="Apply Presentation Codec ▶"
+                button_label="Aplicar códec de presentación ▶"
             ),
             # Stage 1: L4 Transport Decision: UDP vs TCP
             StageDecision(
                 stage_id="l4_multimedia",
                 layer_num=4,
-                title="Transport Layer — Low Latency vs Ordered Delivery",
+                title="Capa de Transporte — Baja latencia vs entrega ordenada",
                 prompt="For an interactive two-way voice and video conversation, which Transport Layer protocol is best suited?",
                 explanation="In human conversations, a delayed audio/video frame is useless. If a packet is lost, is it better to freeze the call to retransmit, or skip it to keep the call live?",
                 input_type="CHOICE",
@@ -152,13 +152,13 @@ class MissionVideoCall(BaseMission):
                     }
                 ],
                 default_value="udp",
-                button_label="Select Transport Protocol ▶"
+                button_label="Seleccionar protocolo de transporte ▶"
             ),
             # Stage 2: L5 Session Signaling
             StageDecision(
                 stage_id="l5_session",
                 layer_num=5,
-                title="Session Layer — Call Signaling & Dialog Control",
+                title="Capa de Sesión — Señalización de llamada y control de diálogo",
                 prompt="Which Session Layer signaling protocol should establish the media channel parameters (SDP media offer/answer) between Person A and B?",
                 explanation="Session Layer protocols establish, maintain, and terminate interactive sessions. SIP (Session Initiation Protocol) is the telecom standard.",
                 input_type="CHOICE",
@@ -175,18 +175,18 @@ class MissionVideoCall(BaseMission):
                     }
                 ],
                 default_value="sip",
-                button_label="Establish Communication Session ▶"
+                button_label="Establecer sesión de comunicación ▶"
             ),
             # Stage 3: Live Media Stream & Consequence Test
             StageDecision(
                 stage_id="l4_stream_consequence",
                 layer_num=4,
-                title="Transmission & Packet Drop — Live Call Consequence",
+                title="Transmisión y pérdida de paquete — Consecuencia en llamada en vivo",
                 prompt="Transmitting live multimedia frames across the network. A router drop occurs on Frame #3. Observe consequences:",
                 explanation="Observe how the chosen Transport protocol (TCP vs UDP) behaves when router congestion drops a video frame.",
                 input_type="ACTION",
                 options=[],
-                button_label="Transmit Video Frames & Observe Call ▶"
+                button_label="Transmitir cuadros de video y observar llamada ▶"
             )
         ]
 
@@ -395,13 +395,13 @@ class MissionVideoCall(BaseMission):
             self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Decapsulated & Streaming")
 
         self.complete_mission({
-            "Session Type": "Real-Time Video Call (WebRTC)",
-            "Video Codec (L6)": self.selected_codec,
-            "Transport Protocol (L4)": self.selected_protocol,
-            "End-to-End Latency": f"{self.latency_ms} ms",
-            "Decisions Made": self.decisions_made,
-            "Errors Diagnosed & Fixed": self.errors_repaired,
-            "Key Lesson": "Interactive multimedia requires UDP because timeliness is more vital than 100% reliability. Head-of-line blocking in TCP makes live conversation impossible."
+            "Tipo de sesión": "Videollamada en tiempo real (WebRTC)",
+            "Códec de video (L6)": self.selected_codec,
+            "Protocolo de transporte (L4)": self.selected_protocol,
+            "Latencia extremo a extremo": f"{self.latency_ms} ms",
+            "Decisiones tomadas": self.decisions_made,
+            "Errores diagnosticados y corregidos": self.errors_repaired,
+            "Lección clave": "El multimedia interactivo requiere UDP porque la inmediatez es más importante que la confiabilidad del 100%. El bloqueo Head-of-Line en TCP vuelve inviable una conversación en vivo."
         })
 
     def _advance_to_next_stage(self):

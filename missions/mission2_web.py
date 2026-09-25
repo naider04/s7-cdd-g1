@@ -20,16 +20,16 @@ class MissionWebAccess(BaseMission):
     def __init__(self):
         super().__init__(
             mission_id=2,
-            title="Access a Website",
+            title="Acceder a un sitio web",
             icon="🌐",
-            subtitle="Navigate to a remote web server with routing & protocol decisions",
-            objective="Access 'www.example.com'. Resolve its IP via DNS, select HTTP vs HTTPS, configure gateway routing, and inspect the rendered page.",
+            subtitle="Navegar a un servidor web remoto con decisiones de enrutamiento y protocolo",
+            objective="Acceder a 'www.example.com'. Resolver su IP con DNS, elegir HTTP vs HTTPS, configurar enrutamiento por gateway e inspeccionar la página renderizada.",
             concepts=[
-                "DNS Resolution (Domain -> IP over UDP 53)",
-                "Default Gateway Routing (LAN to WAN)",
-                "HTTP vs HTTPS (Port 80 vs 443 / TLS Security)",
-                "Client-Server HTTP Request & 200 OK Response",
-                "HTML Parsing in Browser Interface"
+                "Resolución DNS (Dominio -> IP por UDP 53)",
+                "Enrutamiento por puerta de enlace predeterminada (LAN a WAN)",
+                "HTTP vs HTTPS (Puerto 80 vs 443 / seguridad TLS)",
+                "Solicitud HTTP cliente-servidor y respuesta 200 OK",
+                "Parseo HTML en la interfaz del navegador"
             ]
         )
         self.target_url = "www.example.com"
@@ -61,7 +61,7 @@ class MissionWebAccess(BaseMission):
         self.browser_url_entry.config(state="readonly")
         self.browser_url_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 8))
 
-        self.browser_status = tk.Label(bar, text="Offline", font=theme.FONT_SMALL, fg=theme.TEXT_MUTED, bg=theme.BG_DARK)
+        self.browser_status = tk.Label(bar, text="Sin conexión", font=theme.FONT_SMALL, fg=theme.TEXT_MUTED, bg=theme.BG_DARK)
         self.browser_status.pack(side=tk.RIGHT)
 
         # Webpage rendering view
@@ -75,7 +75,7 @@ class MissionWebAccess(BaseMission):
             return
         for widget in self.browser_view.winfo_children():
             widget.destroy()
-        tk.Label(self.browser_view, text="Awaiting network decisions to request webpage...", font=theme.FONT_BODY, fg="#666666", bg="#ffffff").pack(pady=40)
+        tk.Label(self.browser_view, text="Esperando decisiones de red para solicitar la página web...", font=theme.FONT_BODY, fg="#666666", bg="#ffffff").pack(pady=40)
 
     def render_webpage(self):
         if not self.browser_view:
@@ -107,7 +107,7 @@ class MissionWebAccess(BaseMission):
             StageDecision(
                 stage_id="l7_dns",
                 layer_num=7,
-                title="Application Layer — DNS Name Resolution",
+                title="Capa de Aplicación — Resolución DNS",
                 prompt="Person A wants to navigate to 'www.example.com'. Before creating an IP packet, Layer 7 needs the server's numeric IP address. Which DNS resolver should be queried?",
                 explanation="Computers communicate over IP using numeric addresses. DNS (Domain Name System) translates human-readable hostnames into 32-bit IPv4 addresses over UDP port 53.",
                 input_type="CHOICE",
@@ -129,13 +129,13 @@ class MissionWebAccess(BaseMission):
                     }
                 ],
                 default_value="8.8.8.8",
-                button_label="Send DNS Query (UDP Port 53) ▶"
+                button_label="Enviar consulta DNS (Puerto UDP 53) ▶"
             ),
             # Stage 1: Protocol & Port Choice
             StageDecision(
                 stage_id="l4_l7_proto",
                 layer_num=4,
-                title="Transport & Application Layers — Protocol & Port",
+                title="Capas de Transporte y Aplicación — Protocolo y puerto",
                 prompt="Which web protocol and destination port should be selected for the web connection?",
                 explanation="Web servers listen on well-known ports: Port 80 for HTTP (plaintext) and Port 443 for HTTPS (TLS encrypted). Non-standard ports require explicit server listeners.",
                 input_type="CHOICE",
@@ -157,13 +157,13 @@ class MissionWebAccess(BaseMission):
                     }
                 ],
                 default_value="https_443",
-                button_label="Configure Port & Encapsulate L4 ▶"
+                button_label="Configurar puerto y encapsular L4 ▶"
             ),
             # Stage 2: Gateway Routing
             StageDecision(
                 stage_id="l3_gateway",
                 layer_num=3,
-                title="Network Layer — Routing & Default Gateway",
+                title="Capa de Red — Enrutamiento y gateway predeterminado",
                 prompt=f"Person A is on subnet 192.168.1.0/24. The resolved web server is {self.resolved_ip} (External WAN). Where should Layer 3 forward the packet?",
                 explanation="When destination IPs are outside the local subnet mask, Layer 3 cannot send directly to the destination MAC; it must route through the Default Gateway Router.",
                 input_type="CHOICE",
@@ -180,18 +180,18 @@ class MissionWebAccess(BaseMission):
                     }
                 ],
                 default_value="gateway",
-                button_label="Encapsulate Layer 3 & Route Packet ▶"
+                button_label="Encapsular capa 3 y enrutar paquete ▶"
             ),
             # Stage 3: Server Response & Render
             StageDecision(
                 stage_id="l7_render",
                 layer_num=7,
-                title="Application Layer — Browser Rendering",
+                title="Capa de Aplicación — Renderizado del navegador",
                 prompt="The web server received the GET request and returned 'HTTP/1.1 200 OK' with the HTML document payload. Finalize the transmission:",
                 explanation="Person A's browser parses the HTML document structure, evaluates styles, and renders the graphical webpage.",
                 input_type="ACTION",
                 options=[],
-                button_label="Parse HTML & Render Webpage in Browser ▶"
+                button_label="Procesar HTML y renderizar página en navegador ▶"
             )
         ]
 
@@ -384,19 +384,19 @@ class MissionWebAccess(BaseMission):
                     self.ssl_badge.config(text="⚠ HTTP (Not Secure)", fg=theme.COLOR_WARNING)
 
             if self.browser_status:
-                self.browser_status.config(text="200 OK (Loaded)", fg=theme.COLOR_SUCCESS)
+                self.browser_status.config(text="200 OK (Cargado)", fg=theme.COLOR_SUCCESS)
 
             self.render_webpage()
 
             self.complete_mission({
-                "Target Hostname": self.target_url,
-                "DNS Server": f"{self.dns_server} (UDP 53)",
-                "Resolved IP": self.resolved_ip,
-                "Protocol / Port": f"{self.selected_protocol} (Port {self.selected_port})",
-                "Routing Path": f"LAN Host -> Gateway {self.gateway_ip} -> Internet -> Server {self.resolved_ip}",
-                "Decisions Made": self.decisions_made,
-                "Errors Diagnosed & Fixed": self.errors_repaired,
-                "Result": "Webpage Rendered Cleanly"
+                "Host objetivo": self.target_url,
+                "Servidor DNS": f"{self.dns_server} (UDP 53)",
+                "IP resuelta": self.resolved_ip,
+                "Protocolo / puerto": f"{self.selected_protocol} (Puerto {self.selected_port})",
+                "Ruta de enrutamiento": f"Host LAN -> Gateway {self.gateway_ip} -> Internet -> Servidor {self.resolved_ip}",
+                "Decisiones tomadas": self.decisions_made,
+                "Errores diagnosticados y corregidos": self.errors_repaired,
+                "Resultado": "Página web renderizada correctamente"
             })
 
     def _transmit_web_request(self):
