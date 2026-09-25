@@ -27,7 +27,7 @@ class MissionVideoCall(BaseMission):
             concepts=[
                 "Protocolo de transporte en tiempo real (RTP/UDP)",
                 "Compromiso entre latencia y confiabilidad",
-                "Bloqueo Head-of-Line en TCP",
+                "Bloqueo por orden de llegada en TCP (Head-of-Line)",
                 "Compresión de video con códec (L6 H.264)",
                 "Señalización de sesión (SIP/SDP en L5)"
             ]
@@ -55,7 +55,7 @@ class MissionVideoCall(BaseMission):
         self.lbl_quality = tk.Label(top, text="Calidad: EN ESPERA", font=theme.FONT_BODY_BOLD, fg=theme.TEXT_MUTED, bg=theme.BG_DARK)
         self.lbl_quality.pack(side=tk.RIGHT, padx=8)
 
-        self.lbl_latency = tk.Label(top, text="Latencia: -- ms | Jitter: -- ms", font=theme.FONT_SMALL, fg=theme.TEXT_SECONDARY, bg=theme.BG_DARK)
+        self.lbl_latency = tk.Label(top, text="Latencia: -- ms | Variación: -- ms", font=theme.FONT_SMALL, fg=theme.TEXT_SECONDARY, bg=theme.BG_DARK)
         self.lbl_latency.pack(side=tk.RIGHT, padx=15)
 
         # Dual Video Screen Simulation
@@ -98,12 +98,12 @@ class MissionVideoCall(BaseMission):
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#059669", outline="")
             c.create_text(cx, h/2 - 10, text="👤", font=(theme.FONT_FAMILY, 24))
             c.create_rectangle(cx - 20, h/2 - 15, cx + 20, h/2 - 5, fill="#f59e0b", outline="")
-            c.create_text(cx, h - 25, text="⚠ Cuadro #3 perdido -> omitido (¡llamada intacta!)", font=theme.FONT_TINY, fill=theme.COLOR_WARNING)
+            c.create_text(cx, h - 25, text="⚠ Fotograma n.º 3 perdido -> omitido (¡llamada intacta!)", font=theme.FONT_TINY, fill=theme.COLOR_WARNING)
         elif state == "TCP_FROZEN":
             c.create_oval(cx - 25, h/2 - 35, cx + 25, h/2 + 15, fill="#dc2626", outline="")
             c.create_text(cx, h/2 - 10, text="❄️", font=(theme.FONT_FAMILY, 24))
-            c.create_text(cx, h/2 + 25, text="TRANSMISIÓN CONGELADA (Retardo: 1.45 s)", font=theme.FONT_SMALL, fill=theme.COLOR_ERROR)
-            c.create_text(cx, h - 25, text="✗ Bloqueo Head-of-Line esperando retransmisión", font=theme.FONT_TINY, fill=theme.COLOR_ERROR)
+            c.create_text(cx, h/2 + 25, text="TRANSMISIÓN CONGELADA (Retardo: 1,45 s)", font=theme.FONT_SMALL, fill=theme.COLOR_ERROR)
+            c.create_text(cx, h - 25, text="✗ Bloqueo por orden de llegada: esperando la retransmisión", font=theme.FONT_TINY, fill=theme.COLOR_ERROR)
 
     def load_initial_stage(self):
         self.current_stage_index = 0
@@ -113,19 +113,19 @@ class MissionVideoCall(BaseMission):
                 stage_id="l6_codec",
                 layer_num=6,
                 title="Capa de Presentación — Codificación y compresión de video",
-                prompt="Webcam captures raw video at 720p 30fps. How should the Presentation Layer encode the video data before transmission?",
-                explanation="Raw 720p uncompressed RGB video requires over 660 Mbps of bandwidth. Video codecs (like H.264) compress video by over 98% to fit standard network connections.",
+                prompt="La webcam captura video sin comprimir a 720p y 30 fps. ¿Cómo debe codificar la capa de presentación los datos de video antes de transmitirlos?",
+                explanation="El video RGB sin comprimir a 720p requiere más de 660 Mbps de ancho de banda. Los códecs de video (como H.264) comprimen el video más de un 98 % para que quepa en conexiones de red estándar.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "h264",
-                        "title": "H.264 (AVC) Lossy Real-Time Compression (~2 Mbps)",
-                        "desc": "Compresses video using inter-frame predictive encoding, allowing smooth internet streaming."
+                        "title": "H.264 (AVC) — Compresión con pérdida en tiempo real (~2 Mbps)",
+                        "desc": "Comprime el video mediante codificación predictiva entre fotogramas, lo que permite una transmisión fluida por Internet."
                     },
                     {
                         "id": "raw_rgb",
-                        "title": "Raw Uncompressed Bitmaps (RGB24 — 660 Mbps)",
-                        "desc": "Sends each pixel value without compression."
+                        "title": "Mapas de bits sin comprimir (RGB24 — 660 Mbps)",
+                        "desc": "Envía el valor de cada píxel sin compresión."
                     }
                 ],
                 default_value="h264",
@@ -136,19 +136,19 @@ class MissionVideoCall(BaseMission):
                 stage_id="l4_multimedia",
                 layer_num=4,
                 title="Capa de Transporte — Baja latencia vs entrega ordenada",
-                prompt="For an interactive two-way voice and video conversation, which Transport Layer protocol is best suited?",
-                explanation="In human conversations, a delayed audio/video frame is useless. If a packet is lost, is it better to freeze the call to retransmit, or skip it to keep the call live?",
+                prompt="Para una conversación interactiva de voz y video bidireccional, ¿qué protocolo de la capa de Transporte resulta más adecuado?",
+                explanation="En las conversaciones humanas, un fotograma de audio o video retrasado no tiene utilidad. Si se pierde un paquete, ¿es mejor congelar la llamada para retransmitirlo u omitirlo para mantenerla en vivo?",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "udp",
-                        "title": "UDP with RTP (Real-Time Transport Protocol) — Low Latency",
-                        "desc": "Delivers packets immediately without retransmission delays. Occasional lost packets are skipped."
+                        "title": "UDP con RTP (Protocolo de transporte en tiempo real) — Baja latencia",
+                        "desc": "Entrega los paquetes inmediatamente sin retardos de retransmisión. Los paquetes perdidos ocasionales se omiten."
                     },
                     {
                         "id": "tcp",
-                        "title": "TCP — Guaranteed In-Order Delivery & Retransmission",
-                        "desc": "Forces the receiver to freeze playback whenever a packet is dropped until retransmission completes."
+                        "title": "TCP — Entrega ordenada garantizada y retransmisión",
+                        "desc": "Obliga al receptor a congelar la reproducción cada vez que se pierde un paquete hasta que termina la retransmisión."
                     }
                 ],
                 default_value="udp",
@@ -159,19 +159,19 @@ class MissionVideoCall(BaseMission):
                 stage_id="l5_session",
                 layer_num=5,
                 title="Capa de Sesión — Señalización de llamada y control de diálogo",
-                prompt="Which Session Layer signaling protocol should establish the media channel parameters (SDP media offer/answer) between Person A and B?",
-                explanation="Session Layer protocols establish, maintain, and terminate interactive sessions. SIP (Session Initiation Protocol) is the telecom standard.",
+                prompt="¿Qué protocolo de señalización de la capa de Sesión debe establecer los parámetros del canal multimedia (oferta/respuesta de medios SDP) entre Persona A y Persona B?",
+                explanation="Los protocolos de la capa de Sesión establecen, mantienen y terminan sesiones interactivas. SIP (Protocolo de Inicio de Sesión) es el estándar de telecomunicaciones.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "sip",
-                        "title": "SIP / SDP (Session Initiation Protocol — Port 5060)",
-                        "desc": "Exchanges audio/video capabilities (codecs, ports) and establishes duplex media channel."
+                        "title": "SIP / SDP (Protocolos de Inicio y Descripción de Sesión — puerto 5060)",
+                        "desc": "Intercambia las capacidades de audio y video (códecs, puertos) y establece un canal de medios dúplex."
                     },
                     {
                         "id": "ftp_control",
-                        "title": "FTP Control (Port 21)",
-                        "desc": "File transfer control channel."
+                        "title": "Control FTP (puerto 21)",
+                        "desc": "Canal de control para transferencia de archivos."
                     }
                 ],
                 default_value="sip",
@@ -181,12 +181,12 @@ class MissionVideoCall(BaseMission):
             StageDecision(
                 stage_id="l4_stream_consequence",
                 layer_num=4,
-                title="Transmisión y pérdida de paquete — Consecuencia en llamada en vivo",
-                prompt="Transmitting live multimedia frames across the network. A router drop occurs on Frame #3. Observe consequences:",
-                explanation="Observe how the chosen Transport protocol (TCP vs UDP) behaves when router congestion drops a video frame.",
+                title="Transmisión y pérdida de paquete — Consecuencia durante una llamada en vivo",
+                prompt="Se transmiten fotogramas multimedia en vivo por la red. Un enrutador descarta el fotograma n.º 3. Observa las consecuencias:",
+                explanation="Observa cómo se comporta el protocolo de Transporte elegido (TCP frente a UDP) cuando la congestión del enrutador descarta un fotograma de video.",
                 input_type="ACTION",
                 options=[],
-                button_label="Transmitir cuadros de video y observar llamada ▶"
+                button_label="Transmitir fotogramas de video y observar la llamada ▶"
             )
         ]
 
@@ -199,39 +199,39 @@ class MissionVideoCall(BaseMission):
         if stage.stage_id == "l6_codec":
             if user_value == "raw_rgb":
                 # Consequence: Bandwidth overflow!
-                self.update_layer("sender", 6, LayerStatus.ERROR, "Bandwidth Overflow (660 Mbps > 100 Mbps)", has_error=True)
-                self.log("ERROR", "⚠", "Consequence: Raw uncompressed video generates 660 Mbps of data! Uplink capacity is only 100 Mbps. Complete link saturation and crash!", 6)
+                self.update_layer("sender", 6, LayerStatus.ERROR, "Desbordamiento del ancho de banda (660 Mbps > 100 Mbps)", has_error=True)
+                self.log("ERROR", "⚠", "Consecuencia: ¡el video sin comprimir genera 660 Mbps de datos! La capacidad de subida es de solo 100 Mbps. ¡El enlace queda completamente saturado y se bloquea!", 6)
 
                 def fix_codec():
                     self.selected_codec = "H.264"
-                    self.update_layer("sender", 6, LayerStatus.COMPLETE, "H.264 (2 Mbps Stream)")
-                    self.log("SUCCESS", "✓", "Repaired: H.264 lossy compression enabled. Stream reduced to manageable 2 Mbps.", 6)
+                    self.update_layer("sender", 6, LayerStatus.COMPLETE, "H.264 (flujo de 2 Mbps)")
+                    self.log("SUCCESS", "✓", "Reparación: se habilitó la compresión con pérdida H.264. El flujo se redujo a unos 2 Mbps.", 6)
                     self._advance_to_next_stage()
 
                 issue = TroubleshootIssue(
                     layer_num=6,
-                    title="Presentation Layer: Link Capacity Overflow",
-                    summary="Uncompressed 720p raw video generates 660 Mbps of traffic, exceeding the network card bandwidth limit.",
+                    title="Capa de presentación: desbordamiento de la capacidad del enlace",
+                    summary="El video 720p sin comprimir genera 660 Mbps de tráfico y supera el límite de ancho de banda de la tarjeta de red.",
                     details=(
-                        "Layer 6 (Presentation) is responsible for data compression.\n\n"
-                        "Without codec compression (e.g. H.264, VP9, AV1), transmitting 1280x720 pixels at 30 fps requires:\n"
-                        "1280 * 720 * 24 bits * 30 fps = ~663 Mbps!\n\n"
-                        "Modern codecs use discrete cosine transforms and motion estimation to compress video by 98% down to 2 Mbps without perceptible loss of quality."
+                        "La capa 6 (Presentación) es responsable de la compresión de datos.\n\n"
+                        "Sin compresión mediante códec (por ejemplo, H.264, VP9 o AV1), transmitir 1280x720 píxeles a 30 fps requiere:\n"
+                        "1280 * 720 * 24 bits * 30 fps = ~663 Mbps.\n\n"
+                        "Los códecs modernos usan transformadas discretas del coseno y estimación de movimiento para comprimir el video un 98 % hasta 2 Mbps sin una pérdida de calidad perceptible."
                     ),
                     options=[
                         RepairOption(
                             id="use_h264",
-                            title="Compress with H.264 Codec (Recommended)",
-                            description="Encode frames using H.264 standard for real-time internet streaming.",
+                            title="Comprimir con el códec H.264 (recomendado)",
+                            description="Codificar los fotogramas con el estándar H.264 para transmisión en tiempo real por Internet.",
                             is_correct=True,
-                            feedback="Correct! Bandwidth drops to 2 Mbps, easily accommodated by the link."
+                            feedback="¡Correcto! El ancho de banda baja a 2 Mbps, una capacidad que el enlace puede soportar sin problema."
                         ),
                         RepairOption(
                             id="keep_raw",
-                            title="Buy a 10 Gbps dedicated fiber line",
-                            description="Spend thousands of dollars on enterprise fiber.",
+                            title="Comprar una línea de fibra dedicada de 10 Gbps",
+                            description="Gastar miles de dólares en fibra empresarial.",
                             is_correct=False,
-                            feedback="Impractical and unnecessary. Video applications always use video codecs."
+                            feedback="Impracticable e innecesario. Las aplicaciones de video siempre usan códecs de video."
                         )
                     ],
                     on_repair_success=fix_codec
@@ -240,61 +240,61 @@ class MissionVideoCall(BaseMission):
                 return
 
             self.selected_codec = "H.264"
-            self.update_layer("sender", 6, LayerStatus.COMPLETE, "H.264 Compressed (2 Mbps)")
-            self.log("INFO", "✓", "L6 (Presentation): Encoded video using H.264 AVC (High Profile) & audio using Opus.", 6)
+            self.update_layer("sender", 6, LayerStatus.COMPLETE, "H.264 comprimido (2 Mbps)")
+            self.log("INFO", "✓", "L6 (Presentación): video codificado con H.264 AVC (Perfil alto) y audio codificado con Opus.", 6)
             self.inspector_data.encoding = "H.264 / Opus"
-            self.inspector_data.compression = "Lossy DCT Motion Vectors"
+            self.inspector_data.compression = "Vectores de movimiento DCT con pérdida"
             self.notify_inspector()
             self._advance_to_next_stage()
 
         elif stage.stage_id == "l4_multimedia":
             self.selected_protocol = "UDP" if user_value == "udp" else "TCP"
             if self.selected_protocol == "TCP":
-                self.log("WARNING", "⚠", "User chose TCP: Warning! Strict in-order delivery will cause head-of-line blocking if packets drop!", 4)
-                self.update_layer("sender", 4, LayerStatus.ACTIVE, "TCP (Retransmission Enabled)")
+                self.log("WARNING", "⚠", "El usuario eligió TCP: ¡advertencia! La entrega estricta en orden provocará un bloqueo por orden de llegada (Head-of-Line) si se pierden paquetes.", 4)
+                self.update_layer("sender", 4, LayerStatus.ACTIVE, "TCP (retransmisión habilitada)")
             else:
-                self.log("INFO", "✓", "User chose UDP: Real-Time Transport Protocol (RTP) over UDP. Optimized for interactive conversations.", 4)
-                self.update_layer("sender", 4, LayerStatus.ACTIVE, "UDP / RTP (Zero Retransmission Delay)")
+                self.log("INFO", "✓", "El usuario eligió UDP: Protocolo de transporte en tiempo real (RTP) sobre UDP. Optimizado para conversaciones interactivas.", 4)
+                self.update_layer("sender", 4, LayerStatus.ACTIVE, "UDP / RTP (sin retardo de retransmisión)")
 
-            self.inspector_data.transport_protocol = f"{self.selected_protocol} (RTP Port 5004)"
+            self.inspector_data.transport_protocol = f"{self.selected_protocol} (puerto RTP 5004)"
             self.notify_inspector()
             self._advance_to_next_stage()
 
         elif stage.stage_id == "l5_session":
             if user_value == "ftp_control":
-                self.update_layer("sender", 5, LayerStatus.ERROR, "Session Protocol Mismatch (FTP)", has_error=True)
-                self.log("ERROR", "⚠", "Consequence: FTP Control cannot initiate or negotiate media codecs for real-time video calls!", 5)
+                self.update_layer("sender", 5, LayerStatus.ERROR, "Protocolo de sesión incompatible (FTP)", has_error=True)
+                self.log("ERROR", "⚠", "Consecuencia: ¡el control FTP no puede iniciar ni negociar códecs multimedia para videollamadas en tiempo real!", 5)
 
                 def fix_session():
-                    self.update_layer("sender", 5, LayerStatus.COMPLETE, "SIP/SDP Session Active")
-                    self.log("SUCCESS", "✓", "Repaired: SIP INVITE negotiated. Duplex RTP media channel open.", 5)
+                    self.update_layer("sender", 5, LayerStatus.COMPLETE, "Sesión SIP/SDP activa")
+                    self.log("SUCCESS", "✓", "Reparación: se negoció SIP INVITE. Canal de medios RTP dúplex abierto.", 5)
                     self._advance_to_next_stage()
 
                 issue = TroubleshootIssue(
                     layer_num=5,
-                    title="Session Layer Protocol Incompatibility",
-                    summary="FTP is a file-transfer protocol. It does not support real-time audio/video session negotiation.",
+                    title="Incompatibilidad del protocolo de la capa de Sesión",
+                    summary="FTP es un protocolo de transferencia de archivos. No admite la negociación de sesiones de audio/video en tiempo real.",
                     details=(
-                        "In VoIP and video conferencing, Session Initiation Protocol (SIP) is used at Layer 5 to:\n"
-                        "• Locate endpoints\n"
-                        "• Negotiate media types via SDP (Session Description Protocol)\n"
-                        "• Ring and establish call connections\n"
-                        "• Tear down calls when hung up."
+                        "En VoIP y videoconferencia, el Protocolo de Inicio de Sesión (SIP) se utiliza en la capa 5 para:\n"
+                        "• Localizar los extremos\n"
+                        "• Negociar los tipos de medios mediante SDP (Protocolo de Descripción de Sesión)\n"
+                        "• Hacer sonar y establecer las conexiones de llamada\n"
+                        "• Finalizar las llamadas cuando se cuelga."
                     ),
                     options=[
                         RepairOption(
                             id="use_sip",
-                            title="Negotiate session with SIP / SDP (Recommended)",
-                            description="Use standard VoIP signaling protocol.",
+                            title="Negociar la sesión con SIP / SDP (recomendado)",
+                            description="Usar el protocolo de señalización VoIP estándar.",
                             is_correct=True,
-                            feedback="Correct! SIP INVITE established duplex media session."
+                            feedback="¡Correcto! SIP INVITE estableció una sesión de medios dúplex."
                         ),
                         RepairOption(
                             id="skip_session",
-                            title="Proceed with no session tracking",
-                            description="Stream without negotiating codecs.",
+                            title="Continuar sin seguimiento de sesión",
+                            description="Transmitir sin negociar los códecs.",
                             is_correct=False,
-                            feedback="Incorrect. Receiver won't know which codec or port to listen on."
+                            feedback="Incorrecto. El receptor no sabrá qué códec utilizar ni en qué puerto escuchar."
                         )
                     ],
                     on_repair_success=fix_session
@@ -302,13 +302,13 @@ class MissionVideoCall(BaseMission):
                 self.trigger_error(issue)
                 return
 
-            self.update_layer("sender", 5, LayerStatus.COMPLETE, "SIP/SDP Session Active")
-            self.log("INFO", "✓", "L5 (Session): SIP dialog established. SDP agreed on H.264 @ 720p.", 5)
+            self.update_layer("sender", 5, LayerStatus.COMPLETE, "Sesión SIP/SDP activa")
+            self.log("INFO", "✓", "L5 (Sesión): diálogo SIP establecido. SDP negoció H.264 a 720p.", 5)
             self._advance_to_next_stage()
 
         elif stage.stage_id == "l4_stream_consequence":
             # Animate video stream packets and test consequence!
-            self.log("INFO", "→", f"Streaming video packets across network using {self.selected_protocol}...", None)
+            self.log("INFO", "→", f"Transmitiendo fotogramas de video por la red con {self.selected_protocol}...", None)
 
             def on_stream_done():
                 self.packets_sent += 10
@@ -318,54 +318,54 @@ class MissionVideoCall(BaseMission):
                     # Severe freeze consequence!
                     self.latency_ms = 1450
                     self.jitter_ms = 320
-                    self.call_quality = "POOR (Freeze: 1.45s)"
+                    self.call_quality = "MALA (congelamiento: 1,45 s)"
                     if self.lbl_quality:
-                        self.lbl_quality.config(text=f"Quality: {self.call_quality}", fg=theme.COLOR_ERROR)
+                        self.lbl_quality.config(text=f"Calidad: {self.call_quality}", fg=theme.COLOR_ERROR)
                     if self.lbl_latency:
-                        self.lbl_latency.config(text=f"Latency: {self.latency_ms} ms | Jitter: {self.jitter_ms} ms", fg=theme.COLOR_ERROR)
+                        self.lbl_latency.config(text=f"Latencia: {self.latency_ms} ms | Variación: {self.jitter_ms} ms", fg=theme.COLOR_ERROR)
                     self.draw_video_call("TCP_FROZEN")
 
-                    self.update_layer("receiver", 4, LayerStatus.ERROR, "TCP Stalled (Head-of-Line)", has_error=True)
-                    self.log("ERROR", "⚠", "Consequence of TCP Choice: When Frame #3 dropped, TCP halted playback! All newer frames are blocked waiting for retransmission. Call is frozen!", 4)
+                    self.update_layer("receiver", 4, LayerStatus.ERROR, "TCP detenido (bloqueo por orden de llegada)", has_error=True)
+                    self.log("ERROR", "⚠", "Consecuencia de elegir TCP: cuando se descartó el fotograma n.º 3, ¡TCP detuvo la reproducción! Todos los fotogramas más nuevos quedan bloqueados mientras esperan la retransmisión. ¡La llamada está congelada!", 4)
 
                     def fix_to_udp():
                         self.selected_protocol = "UDP"
                         self.latency_ms = 22
                         self.jitter_ms = 4
-                        self.call_quality = "EXCELLENT (22ms)"
+                        self.call_quality = "EXCELENTE (22 ms)"
                         if self.lbl_quality:
-                            self.lbl_quality.config(text=f"Quality: {self.call_quality}", fg=theme.COLOR_SUCCESS)
+                            self.lbl_quality.config(text=f"Calidad: {self.call_quality}", fg=theme.COLOR_SUCCESS)
                         if self.lbl_latency:
-                            self.lbl_latency.config(text=f"Latency: {self.latency_ms} ms | Jitter: {self.jitter_ms} ms", fg=theme.COLOR_SUCCESS)
+                            self.lbl_latency.config(text=f"Latencia: {self.latency_ms} ms | Variación: {self.jitter_ms} ms", fg=theme.COLOR_SUCCESS)
                         self.draw_video_call("UDP_GOOD")
-                        self.log("SUCCESS", "✓", "Switched to UDP (RTP): Lost frames are simply skipped by codec. Real-time latency restored to 22ms!", 4)
-                        self.update_layer("receiver", 4, LayerStatus.COMPLETE, "UDP / RTP Real-Time Active")
+                        self.log("SUCCESS", "✓", "Se cambió a UDP (RTP): el códec simplemente omite los fotogramas perdidos. ¡La latencia en tiempo real volvió a ser de 22 ms!", 4)
+                        self.update_layer("receiver", 4, LayerStatus.COMPLETE, "UDP / RTP en tiempo real activo")
                         self._finish_video_mission()
 
                     issue = TroubleshootIssue(
                         layer_num=4,
-                        title="Head-of-Line Blocking in Video Call (TCP Failure)",
-                        summary="The call froze for 1.45 seconds because TCP halts the stream to wait for lost packet retransmissions.",
+                        title="Bloqueo por orden de llegada (Head-of-Line) en una videollamada (fallo de TCP)",
+                        summary="La llamada se congeló durante 1,45 segundos porque TCP detiene el flujo para esperar las retransmisiones de los paquetes perdidos.",
                         details=(
-                            "This demonstrates why almost all interactive video/voice applications (Zoom, Discord, WebRTC) use UDP.\n\n"
-                            "With TCP, if Packet #3 is lost, Packets #4, #5, #6 are buffered and held back from the application until #3 is retransmitted.\n"
-                            "In a live conversation, an old frame from 1.5 seconds ago is worthless!\n\n"
-                            "With UDP, missing packets are simply dropped, allowing the video codec to interpolate or skip ahead with zero latency penalty."
+                            "Esto demuestra por qué casi todas las aplicaciones interactivas de video/voz (Zoom, Discord, WebRTC) usan UDP.\n\n"
+                            "Con TCP, si se pierde el paquete n.º 3, los paquetes n.º 4, 5 y 6 se almacenan y se retienen para la aplicación hasta que se retransmita el n.º 3.\n"
+                            "En una conversación en vivo, ¡un fotograma antiguo de hace 1,5 segundos no tiene valor!\n\n"
+                            "Con UDP, los paquetes que faltan simplemente se descartan, lo que permite que el códec de video interpole o avance sin penalización de latencia."
                         ),
                         options=[
                             RepairOption(
                                 id="switch_udp_rtp",
-                                title="Switch Transport Protocol to UDP (RTP - Recommended)",
-                                description="Eliminate retransmission delays to preserve fluid two-way dialogue.",
+                                title="Cambiar el protocolo de Transporte a UDP (RTP, recomendado)",
+                                description="Eliminar los retardos de retransmisión para preservar un diálogo bidireccional fluido.",
                                 is_correct=True,
-                                feedback="Correct! Latency immediately drops from 1450ms back to 22ms."
+                                feedback="¡Correcto! La latencia baja inmediatamente de 1450 ms a 22 ms."
                             ),
                             RepairOption(
                                 id="wait_tcp_more",
-                                title="Wait for TCP retransmit to finish",
-                                description="Keep conversation frozen.",
+                                title="Esperar a que termine la retransmisión TCP",
+                                description="Mantener la conversación congelada.",
                                 is_correct=False,
-                                feedback="Incorrect. Waiting for retransmission ruins real-time conversations."
+                                feedback="Incorrecto. Esperar la retransmisión arruina las conversaciones en tiempo real."
                             )
                         ],
                         on_repair_success=fix_to_udp
@@ -376,23 +376,23 @@ class MissionVideoCall(BaseMission):
                 # UDP success
                 self.latency_ms = 24
                 self.jitter_ms = 4
-                self.call_quality = "EXCELLENT (24ms)"
+                self.call_quality = "EXCELENTE (24 ms)"
                 if self.lbl_quality:
-                    self.lbl_quality.config(text=f"Quality: {self.call_quality}", fg=theme.COLOR_SUCCESS)
+                    self.lbl_quality.config(text=f"Calidad: {self.call_quality}", fg=theme.COLOR_SUCCESS)
                 if self.lbl_latency:
-                    self.lbl_latency.config(text=f"Latency: {self.latency_ms} ms | Jitter: {self.jitter_ms} ms", fg=theme.COLOR_SUCCESS)
+                    self.lbl_latency.config(text=f"Latencia: {self.latency_ms} ms | Variación: {self.jitter_ms} ms", fg=theme.COLOR_SUCCESS)
                 self.draw_video_call("UDP_GLITCH")
-                self.log("INFO", "✓", "UDP Resilience: Frame #3 was dropped by router, but RTP smoothly skipped it. Audio/video remained live at 24ms!", 4)
+                self.log("INFO", "✓", "Resiliencia de UDP: el enrutador descartó el fotograma n.º 3, pero el códec lo omitió y la llamada continuó sin interrupciones. ¡El audio y el video continuaron en vivo a 24 ms!", 4)
                 self._finish_video_mission()
 
             if self.cb_network_animate:
-                self.cb_network_animate("Person A", "Person B", "PACKET", "RTP Video Frame", False, on_stream_done)
+                self.cb_network_animate("Person A", "Person B", "PACKET", "Fotograma de video RTP", False, on_stream_done)
             else:
                 on_stream_done()
 
     def _finish_video_mission(self):
         for lyr in range(1, 8):
-            self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Decapsulated & Streaming")
+            self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Desencapsulado y transmitiendo")
 
         self.complete_mission({
             "Tipo de sesión": "Videollamada en tiempo real (WebRTC)",
@@ -401,7 +401,7 @@ class MissionVideoCall(BaseMission):
             "Latencia extremo a extremo": f"{self.latency_ms} ms",
             "Decisiones tomadas": self.decisions_made,
             "Errores diagnosticados y corregidos": self.errors_repaired,
-            "Lección clave": "El multimedia interactivo requiere UDP porque la inmediatez es más importante que la confiabilidad del 100%. El bloqueo Head-of-Line en TCP vuelve inviable una conversación en vivo."
+            "Lección clave": "El multimedia interactivo requiere UDP porque la inmediatez es más importante que la confiabilidad del 100 %. El bloqueo por orden de llegada (Head-of-Line) en TCP vuelve inviable una conversación en vivo."
         })
 
     def _advance_to_next_stage(self):

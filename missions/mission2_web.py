@@ -23,13 +23,13 @@ class MissionWebAccess(BaseMission):
             title="Acceder a un sitio web",
             icon="🌐",
             subtitle="Navegar a un servidor web remoto con decisiones de enrutamiento y protocolo",
-            objective="Acceder a 'www.example.com'. Resolver su IP con DNS, elegir HTTP vs HTTPS, configurar enrutamiento por gateway e inspeccionar la página renderizada.",
+            objective="Acceder a 'www.example.com'. Resolver su IP con DNS, elegir entre HTTP y HTTPS, configurar el enrutamiento mediante la puerta de enlace e inspeccionar la página renderizada.",
             concepts=[
-                "Resolución DNS (Dominio -> IP por UDP 53)",
-                "Enrutamiento por puerta de enlace predeterminada (LAN a WAN)",
-                "HTTP vs HTTPS (Puerto 80 vs 443 / seguridad TLS)",
+                "Resolución DNS (dominio -> IP por UDP 53)",
+                "Enrutamiento por puerta de enlace predeterminada (de LAN a WAN)",
+                "HTTP frente a HTTPS (puerto 80 frente a 443 y seguridad TLS)",
                 "Solicitud HTTP cliente-servidor y respuesta 200 OK",
-                "Parseo HTML en la interfaz del navegador"
+                "Análisis de HTML en la interfaz del navegador"
             ]
         )
         self.target_url = "www.example.com"
@@ -83,12 +83,12 @@ class MissionWebAccess(BaseMission):
         for widget in self.browser_view.winfo_children():
             widget.destroy()
 
-        h1 = tk.Label(self.browser_view, text="Example Domain", font=(theme.FONT_FAMILY, 18, "bold"), fg="#111827", bg="#ffffff")
+        h1 = tk.Label(self.browser_view, text="Dominio de ejemplo", font=(theme.FONT_FAMILY, 18, "bold"), fg="#111827", bg="#ffffff")
         h1.pack(anchor=tk.W, pady=(0, 8))
 
         p1 = tk.Label(
             self.browser_view,
-            text="This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+            text="Este dominio está destinado a usarse en ejemplos ilustrativos de documentos. Puedes usar este dominio en publicaciones sin coordinación previa ni solicitud de permiso.",
             font=theme.FONT_BODY,
             fg="#374151",
             bg="#ffffff",
@@ -97,7 +97,7 @@ class MissionWebAccess(BaseMission):
         )
         p1.pack(anchor=tk.W, pady=(0, 10))
 
-        link = tk.Label(self.browser_view, text="More information... (RFC 2606)", font=(theme.FONT_FAMILY, 10, "underline"), fg="#2563eb", bg="#ffffff")
+        link = tk.Label(self.browser_view, text="Más información... (RFC 2606)", font=(theme.FONT_FAMILY, 10, "underline"), fg="#2563eb", bg="#ffffff")
         link.pack(anchor=tk.W)
 
     def load_initial_stage(self):
@@ -108,52 +108,52 @@ class MissionWebAccess(BaseMission):
                 stage_id="l7_dns",
                 layer_num=7,
                 title="Capa de Aplicación — Resolución DNS",
-                prompt="Person A wants to navigate to 'www.example.com'. Before creating an IP packet, Layer 7 needs the server's numeric IP address. Which DNS resolver should be queried?",
-                explanation="Computers communicate over IP using numeric addresses. DNS (Domain Name System) translates human-readable hostnames into 32-bit IPv4 addresses over UDP port 53.",
+                prompt="Persona A quiere navegar a 'www.example.com'. Antes de crear un paquete IP, la capa 7 necesita la dirección IP numérica del servidor. ¿Qué servidor DNS debe consultarse?",
+                explanation="Las computadoras se comunican mediante IP usando direcciones numéricas. DNS (Sistema de Nombres de Dominio) traduce los nombres de dominio legibles por personas en direcciones IPv4 de 32 bits mediante el puerto UDP 53.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "8.8.8.8",
-                        "title": "8.8.8.8 (Google Public DNS Server — Active)",
-                        "desc": "Standard recursive public resolver listening on UDP port 53."
+                        "title": "8.8.8.8 (servidor DNS público de Google — activo)",
+                        "desc": "Resolvedor público recursivo estándar que escucha en el puerto UDP 53."
                     },
                     {
                         "id": "0.0.0.0",
-                        "title": "0.0.0.0 (Unconfigured / Missing DNS)",
-                        "desc": "Non-routable zero address representing an unconfigured DNS entry."
+                        "title": "0.0.0.0 (DNS sin configurar / ausente)",
+                        "desc": "Dirección cero no enrutable que representa una entrada DNS sin configurar."
                     },
                     {
                         "id": "127.0.0.1",
-                        "title": "127.0.0.1 (Localhost — No DNS Daemon)",
-                        "desc": "Queries the local host where no local name server is running."
+                        "title": "127.0.0.1 (localhost — sin servicio DNS)",
+                        "desc": "Consulta el equipo local, donde no se está ejecutando ningún servidor de nombres local."
                     }
                 ],
                 default_value="8.8.8.8",
-                button_label="Enviar consulta DNS (Puerto UDP 53) ▶"
+                button_label="Enviar consulta DNS (puerto UDP 53) ▶"
             ),
             # Stage 1: Protocol & Port Choice
             StageDecision(
                 stage_id="l4_l7_proto",
                 layer_num=4,
                 title="Capas de Transporte y Aplicación — Protocolo y puerto",
-                prompt="Which web protocol and destination port should be selected for the web connection?",
-                explanation="Web servers listen on well-known ports: Port 80 for HTTP (plaintext) and Port 443 for HTTPS (TLS encrypted). Non-standard ports require explicit server listeners.",
+                prompt="¿Qué protocolo web y puerto de destino deben seleccionarse para la conexión web?",
+                explanation="Los servidores web escuchan en puertos conocidos: el puerto 80 para HTTP (texto plano) y el puerto 443 para HTTPS (cifrado con TLS). Los puertos no estándar requieren que el servidor habilite servicios de escucha explícitamente.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "https_443",
-                        "title": "HTTPS (Port 443 — Encrypted via TLS 1.3)",
-                        "desc": "Secures transmission with symmetric encryption, preventing packet eavesdropping."
+                        "title": "HTTPS (puerto 443 — cifrado con TLS 1.3)",
+                        "desc": "Protege la transmisión con cifrado simétrico y evita la interceptación de paquetes."
                     },
                     {
                         "id": "http_80",
-                        "title": "HTTP (Port 80 — Plaintext)",
-                        "desc": "Unencrypted web transfer. Headers and HTML can be inspected in cleartext."
+                        "title": "HTTP (puerto 80 — texto plano)",
+                        "desc": "Transferencia web sin cifrar. Las cabeceras y el HTML pueden inspeccionarse en texto claro."
                     },
                     {
                         "id": "port_8080",
-                        "title": "HTTP (Port 8080 — Non-Standard Port)",
-                        "desc": "Sends connection request to alternative port 8080."
+                        "title": "HTTP (puerto 8080 — puerto no estándar)",
+                        "desc": "Envía la solicitud de conexión al puerto alternativo 8080."
                     }
                 ],
                 default_value="https_443",
@@ -163,20 +163,20 @@ class MissionWebAccess(BaseMission):
             StageDecision(
                 stage_id="l3_gateway",
                 layer_num=3,
-                title="Capa de Red — Enrutamiento y gateway predeterminado",
-                prompt=f"Person A is on subnet 192.168.1.0/24. The resolved web server is {self.resolved_ip} (External WAN). Where should Layer 3 forward the packet?",
-                explanation="When destination IPs are outside the local subnet mask, Layer 3 cannot send directly to the destination MAC; it must route through the Default Gateway Router.",
+                title="Capa de Red — Enrutamiento y puerta de enlace predeterminada",
+                prompt=f"Persona A está en la subred 192.168.1.0/24. El servidor web resuelto es {self.resolved_ip} (WAN externa). ¿Adónde debe reenviar el paquete la capa 3?",
+                explanation="Cuando las IP de destino están fuera de la máscara de subred local, la capa 3 no puede enviarlas directamente a la dirección MAC de destino; debe enrutarlas mediante el enrutador de la puerta de enlace predeterminada.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "gateway",
-                        "title": "Forward to Default Gateway Router (192.168.1.1)",
-                        "desc": "Router reads IP destination and routes it across core WAN routers to 93.184.216.34."
+                        "title": "Reenviar al enrutador de la puerta de enlace predeterminada (192.168.1.1)",
+                        "desc": "El enrutador lee la IP de destino y la enruta a través de los enrutadores centrales de la WAN hasta 93.184.216.34."
                     },
                     {
                         "id": "direct_arp",
-                        "title": "Send direct ARP broadcast on local switch for 93.184.216.34",
-                        "desc": "Broadcasts locally hoping the external server is attached to the same switch."
+                        "title": "Enviar una difusión ARP directa en el conmutador local para 93.184.216.34",
+                        "desc": "Difunde localmente con la esperanza de que el servidor externo esté conectado al mismo conmutador."
                     }
                 ],
                 default_value="gateway",
@@ -187,11 +187,11 @@ class MissionWebAccess(BaseMission):
                 stage_id="l7_render",
                 layer_num=7,
                 title="Capa de Aplicación — Renderizado del navegador",
-                prompt="The web server received the GET request and returned 'HTTP/1.1 200 OK' with the HTML document payload. Finalize the transmission:",
-                explanation="Person A's browser parses the HTML document structure, evaluates styles, and renders the graphical webpage.",
+                prompt="El servidor web recibió la solicitud GET y devolvió 'HTTP/1.1 200 OK' con la carga del documento HTML. Finaliza la transmisión:",
+                explanation="El navegador de Persona A analiza la estructura del documento HTML, evalúa los estilos y renderiza la página web gráfica.",
                 input_type="ACTION",
                 options=[],
-                button_label="Procesar HTML y renderizar página en navegador ▶"
+                button_label="Procesar HTML y renderizar página en el navegador ▶"
             )
         ]
 
@@ -204,38 +204,38 @@ class MissionWebAccess(BaseMission):
         if stage.stage_id == "l7_dns":
             self.dns_server = user_value
             if self.dns_server != "8.8.8.8":
-                self.update_layer("sender", 7, LayerStatus.ERROR, f"DNS Failure ({self.dns_server})", has_error=True)
-                self.log("ERROR", "⚠", f"Consequence: Nameserver {self.dns_server} is invalid or unreachable. Host 'www.example.com' cannot be resolved!", 7)
+                self.update_layer("sender", 7, LayerStatus.ERROR, f"Fallo de DNS ({self.dns_server})", has_error=True)
+                self.log("ERROR", "⚠", f"Consecuencia: el servidor de nombres {self.dns_server} no es válido o no está accesible. ¡No se puede resolver el dominio 'www.example.com'!", 7)
 
                 def fix_dns():
                     self.dns_server = "8.8.8.8"
-                    self.update_layer("sender", 7, LayerStatus.COMPLETE, f"Resolved IP: {self.resolved_ip}")
-                    self.log("SUCCESS", "✓", f"DNS Query Succeeded: 'www.example.com' -> {self.resolved_ip} (via UDP 53 to 8.8.8.8)", 7)
+                    self.update_layer("sender", 7, LayerStatus.COMPLETE, f"IP resuelta: {self.resolved_ip}")
+                    self.log("SUCCESS", "✓", f"Consulta DNS correcta: 'www.example.com' -> {self.resolved_ip} (mediante UDP 53 hacia 8.8.8.8)", 7)
                     self._advance_to_next_stage()
 
                 issue = TroubleshootIssue(
                     layer_num=7,
-                    title="DNS Name Resolution Failure",
-                    summary=f"The operating system could not resolve 'www.example.com' using nameserver {self.dns_server}.",
+                    title="Fallo de resolución de nombres DNS",
+                    summary=f"El sistema operativo no pudo resolver 'www.example.com' usando el servidor de nombres {self.dns_server}.",
                     details=(
-                        "Without a working DNS server, web browsers cannot determine which IP address to connect to.\n"
-                        "0.0.0.0 is an invalid target, and 127.0.0.1 has no active DNS daemon running.\n\n"
-                        "To browse the web, configure the system with a valid public resolver like 8.8.8.8 (Google DNS) or 1.1.1.1 (Cloudflare)."
+                        "Sin un servidor DNS funcional, los navegadores web no pueden determinar a qué dirección IP conectarse.\n"
+                        "0.0.0.0 es un destino no válido y 127.0.0.1 no tiene ningún servicio DNS activo en ejecución.\n\n"
+                        "Para navegar por la web, configura el sistema con un resolvedor público válido como 8.8.8.8 (Google DNS) o 1.1.1.1 (Cloudflare)."
                     ),
                     options=[
                         RepairOption(
                             id="set_8888",
-                            title="Configure Primary DNS to 8.8.8.8 (Recommended)",
-                            description="Use Google's public recursive DNS resolver.",
+                            title="Configurar el DNS principal en 8.8.8.8 (recomendado)",
+                            description="Usar el resolvedor DNS público recursivo de Google.",
                             is_correct=True,
-                            feedback="Correct! DNS server returns A-Record 93.184.216.34."
+                            feedback="¡Correcto! El servidor DNS devuelve el registro A 93.184.216.34."
                         ),
                         RepairOption(
                             id="skip_dns",
-                            title="Send packet to domain string without IP",
-                            description="Send Ethernet frame directly with string name.",
+                            title="Enviar el paquete al nombre de dominio sin IP",
+                            description="Enviar directamente un marco Ethernet con el nombre de texto.",
                             is_correct=False,
-                            feedback="Incorrect. IP routers cannot route text domain strings; they require a numerical 32-bit IP."
+                            feedback="Incorrecto. Los enrutadores IP no pueden enrutar nombres de dominio de texto; requieren una IP numérica de 32 bits."
                         )
                     ],
                     on_repair_success=fix_dns
@@ -243,51 +243,51 @@ class MissionWebAccess(BaseMission):
                 self.trigger_error(issue)
                 return
 
-            self.log("SUCCESS", "✓", f"L7 (DNS): Resolved 'www.example.com' -> {self.resolved_ip} (UDP Port 53 to {self.dns_server})", 7)
-            self.update_layer("sender", 7, LayerStatus.COMPLETE, f"Resolved IP: {self.resolved_ip}")
+            self.log("SUCCESS", "✓", f"L7 (DNS): 'www.example.com' resuelto -> {self.resolved_ip} (puerto UDP 53 hacia {self.dns_server})", 7)
+            self.update_layer("sender", 7, LayerStatus.COMPLETE, f"IP resuelta: {self.resolved_ip}")
             self.inspector_data.app_protocol = "DNS / UDP 53"
-            self.inspector_data.payload_text = f"Query: www.example.com -> Answer: {self.resolved_ip}"
+            self.inspector_data.payload_text = f"Consulta: www.example.com -> Respuesta: {self.resolved_ip}"
             self.notify_inspector()
             self._advance_to_next_stage()
 
         elif stage.stage_id == "l4_l7_proto":
             if user_value == "port_8080":
                 # Consequence: Connection refused!
-                self.update_layer("sender", 4, LayerStatus.ERROR, "TCP RST: Connection Refused (Port 8080)", has_error=True)
-                self.log("ERROR", "⚠", "Consequence: Server 93.184.216.34 replied with TCP [RST, ACK]! No web service is listening on Port 8080.", 4)
+                self.update_layer("sender", 4, LayerStatus.ERROR, "TCP RST: conexión rechazada (puerto 8080)", has_error=True)
+                self.log("ERROR", "⚠", "Consecuencia: ¡el servidor 93.184.216.34 respondió con TCP [RST, ACK]! No hay ningún servicio web escuchando en el puerto 8080.", 4)
 
                 def fix_proto():
                     self.selected_protocol = "HTTPS"
                     self.selected_port = 443
-                    self.update_layer("sender", 4, LayerStatus.COMPLETE, "TCP Port 443 (HTTPS)")
-                    self.log("SUCCESS", "✓", "Repaired to HTTPS (Port 443): Standard encrypted web port accepted by web server.", 4)
+                    self.update_layer("sender", 4, LayerStatus.COMPLETE, "Puerto TCP 443 (HTTPS)")
+                    self.log("SUCCESS", "✓", "Reparación: se cambió a HTTPS (puerto 443); el servidor web aceptó el puerto web cifrado estándar.", 4)
                     self._advance_to_next_stage()
 
                 issue = TroubleshootIssue(
                     layer_num=4,
-                    title="Port Unreachable (TCP Connection Refused)",
-                    summary="The remote host received the TCP SYN segment on Port 8080, but returned a TCP RST (Reset) because no web server is bound to port 8080.",
+                    title="Puerto inaccesible (conexión TCP rechazada)",
+                    summary="El equipo remoto recibió el segmento TCP SYN en el puerto 8080, pero devolvió un TCP RST (reinicio) porque ningún servidor web está vinculado al puerto 8080.",
                     details=(
-                        "In Layer 4 (Transport), destination ports identify specific server software processes.\n\n"
-                        "Standard public web servers only bind listeners on:\n"
-                        "• Port 80: HTTP (Plaintext)\n"
-                        "• Port 443: HTTPS (TLS Secure)\n\n"
-                        "Connecting to arbitrary ports like 8080 causes the kernel to immediately reject the connection with TCP RST."
+                        "En la capa 4 (Transporte), los puertos de destino identifican procesos de software específicos del servidor.\n\n"
+                        "Los servidores web públicos estándar solo tienen servicios de escucha vinculados en:\n"
+                        "• Puerto 80: HTTP (texto plano)\n"
+                        "• Puerto 443: HTTPS (seguro con TLS)\n\n"
+                        "Conectarse a puertos arbitrarios como 8080 hace que el núcleo rechace inmediatamente la conexión con TCP RST."
                     ),
                     options=[
                         RepairOption(
                             id="fix_port_443",
-                            title="Switch to Standard Port 443 (HTTPS - Recommended)",
-                            description="Connect to the web server's secure SSL/TLS listener on port 443.",
+                            title="Cambiar al puerto estándar 443 (HTTPS, recomendado)",
+                            description="Conectarse al servicio de escucha seguro SSL/TLS del servidor web en el puerto 443.",
                             is_correct=True,
-                            feedback="Correct! Server accepts the connection on Port 443."
+                            feedback="¡Correcto! El servidor acepta la conexión en el puerto 443."
                         ),
                         RepairOption(
                             id="keep_8080",
-                            title="Retry Port 8080 continuously",
-                            description="Spam SYN packets to port 8080.",
+                            title="Reintentar continuamente en el puerto 8080",
+                            description="Enviar repetidamente paquetes SYN al puerto 8080.",
                             is_correct=False,
-                            feedback="Incorrect. The port is closed; repeated attempts will just be rejected."
+                            feedback="Incorrecto. El puerto está cerrado; los intentos repetidos solo serán rechazados."
                         )
                     ],
                     on_repair_success=fix_proto
@@ -298,16 +298,16 @@ class MissionWebAccess(BaseMission):
             if user_value == "http_80":
                 self.selected_protocol = "HTTP"
                 self.selected_port = 80
-                self.log("WARNING", "⚠", "L6/L4: Plaintext HTTP chosen (Port 80). Warning: Data is unencrypted and readable by network sniffers.", 6)
-                self.update_layer("sender", 6, LayerStatus.COMPLETE, "Plaintext (No Encryption)")
-                self.update_layer("sender", 4, LayerStatus.COMPLETE, "TCP Port 80 (HTTP)")
-                self.inspector_data.encryption = "None (Plaintext)"
+                self.log("WARNING", "⚠", "L6/L4: se eligió HTTP en texto plano (puerto 80). Advertencia: los datos no están cifrados y pueden ser leídos por los analizadores de red.", 6)
+                self.update_layer("sender", 6, LayerStatus.COMPLETE, "Texto plano (sin cifrado)")
+                self.update_layer("sender", 4, LayerStatus.COMPLETE, "Puerto TCP 80 (HTTP)")
+                self.inspector_data.encryption = "Ninguno (texto plano)"
             else:
                 self.selected_protocol = "HTTPS"
                 self.selected_port = 443
-                self.log("INFO", "✓", "L6/L4: HTTPS chosen (Port 443). TLS 1.3 encryption negotiated with AES-256-GCM cipher.", 6)
-                self.update_layer("sender", 6, LayerStatus.COMPLETE, "TLS 1.3 Encrypted")
-                self.update_layer("sender", 4, LayerStatus.COMPLETE, "TCP Port 443 (HTTPS)")
+                self.log("INFO", "✓", "L6/L4: se eligió HTTPS (puerto 443). Se negoció el cifrado TLS 1.3 con el cifrado AES-256-GCM.", 6)
+                self.update_layer("sender", 6, LayerStatus.COMPLETE, "Cifrado con TLS 1.3")
+                self.update_layer("sender", 4, LayerStatus.COMPLETE, "Puerto TCP 443 (HTTPS)")
                 self.inspector_data.encryption = "TLS 1.3 (AES-256-GCM)"
 
             self.inspector_data.transport_protocol = "TCP"
@@ -318,38 +318,38 @@ class MissionWebAccess(BaseMission):
         elif stage.stage_id == "l3_gateway":
             if user_value == "direct_arp":
                 # Consequence: ARP timeout!
-                self.update_layer("sender", 3, LayerStatus.ERROR, "Subnet Mismatch (ARP Timeout)", has_error=True)
-                self.log("ERROR", "⚠", "Consequence: Host 93.184.216.34 is on an external network. Local switch broadcast cannot reach external WAN IP!", 3)
+                self.update_layer("sender", 3, LayerStatus.ERROR, "Discrepancia de subred (tiempo de espera de ARP)", has_error=True)
+                self.log("ERROR", "⚠", "Consecuencia: el equipo 93.184.216.34 está en una red externa. ¡La difusión del conmutador local no puede alcanzar la IP externa de la WAN!", 3)
 
                 def fix_gateway():
                     self.gateway_ip = "192.168.1.1"
-                    self.update_layer("sender", 3, LayerStatus.COMPLETE, f"Routed to Gateway {self.gateway_ip}")
-                    self.log("SUCCESS", "✓", "Repaired: Packet forwarded to Default Gateway Router (192.168.1.1).", 3)
+                    self.update_layer("sender", 3, LayerStatus.COMPLETE, f"Enrutado a la puerta de enlace {self.gateway_ip}")
+                    self.log("SUCCESS", "✓", "Reparación: el paquete se reenvió al enrutador de la puerta de enlace predeterminada (192.168.1.1).", 3)
                     self._transmit_web_request()
 
                 issue = TroubleshootIssue(
                     layer_num=3,
-                    title="Layer 3 Routing Error: Off-Subnet Delivery without Gateway",
-                    summary=f"The client attempted to resolve 93.184.216.34 using a local Layer 2 ARP broadcast instead of routing via the default gateway 192.168.1.1.",
+                    title="Error de enrutamiento de capa 3: entrega fuera de la subred sin puerta de enlace",
+                    summary=f"El cliente intentó resolver 93.184.216.34 mediante una difusión ARP local de capa 2 en lugar de enrutarlo mediante la puerta de enlace predeterminada 192.168.1.1.",
                     details=(
-                        "Hosts check if a destination IP matches their local subnet mask (192.168.1.0/24).\n\n"
-                        "Because 93.184.216.34 is outside 192.168.1.0/24, the computer MUST encapsulate the IP packet into an Ethernet frame addressed to the MAC of the Default Gateway Router.\n"
-                        "Sending an ARP broadcast on the local switch fails because switches do not forward local broadcasts to the Internet."
+                        "Los equipos comprueban si una IP de destino coincide con su máscara de subred local (192.168.1.0/24).\n\n"
+                        "Como 93.184.216.34 está fuera de 192.168.1.0/24, la computadora DEBE encapsular el paquete IP en un marco Ethernet dirigido a la dirección MAC del enrutador de la puerta de enlace predeterminada.\n"
+                        "Enviar una difusión ARP en el conmutador local falla porque los conmutadores no reenvían las difusiones locales a Internet."
                     ),
                     options=[
                         RepairOption(
                             id="use_gateway",
-                            title="Route through Default Gateway (192.168.1.1 - Recommended)",
-                            description="Send frame to local router MAC so it can forward packets onto the Internet WAN.",
+                            title="Enrutar mediante la puerta de enlace predeterminada (192.168.1.1, recomendado)",
+                            description="Enviar el marco a la dirección MAC del enrutador local para que pueda reenviar los paquetes a la WAN de Internet.",
                             is_correct=True,
-                            feedback="Correct! Gateway receives frame, decrements TTL, and routes packet to WAN."
+                            feedback="¡Correcto! La puerta de enlace recibe el marco, reduce el TTL y enruta el paquete a la WAN."
                         ),
                         RepairOption(
                             id="change_mask",
-                            title="Change subnet mask to /0",
-                            description="Treat entire world as local subnet.",
+                            title="Cambiar la máscara de subred a /0",
+                            description="Considerar todo el espacio de direcciones como una sola subred local.",
                             is_correct=False,
-                            feedback="Incorrect. Switches cannot handle worldwide broadcast domains."
+                            feedback="Incorrecto. Los conmutadores no pueden gestionar dominios de difusión mundiales."
                         )
                     ],
                     on_repair_success=fix_gateway
@@ -357,17 +357,17 @@ class MissionWebAccess(BaseMission):
                 self.trigger_error(issue)
                 return
 
-            self.update_layer("sender", 3, LayerStatus.COMPLETE, f"Routed to Gateway {self.gateway_ip}")
-            self.update_layer("sender", 2, LayerStatus.COMPLETE, "Ethernet Frame to Router MAC")
-            self.update_layer("sender", 1, LayerStatus.COMPLETE, "Bitstream Transmitted")
-            self.log("INFO", "✓", f"L3/L2/L1: Packet forwarded to Gateway {self.gateway_ip} destined for {self.resolved_ip}:{self.selected_port}", 3)
+            self.update_layer("sender", 3, LayerStatus.COMPLETE, f"Enrutado a la puerta de enlace {self.gateway_ip}")
+            self.update_layer("sender", 2, LayerStatus.COMPLETE, "Marco Ethernet a la dirección MAC del enrutador")
+            self.update_layer("sender", 1, LayerStatus.COMPLETE, "Flujo de bits transmitido")
+            self.log("INFO", "✓", f"L3/L2/L1: el paquete se reenvió a la puerta de enlace {self.gateway_ip} con destino {self.resolved_ip}:{self.selected_port}", 3)
             self._transmit_web_request()
 
         elif stage.stage_id == "l7_render":
             for lyr in range(1, 8):
-                self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Decapsulated & Processed")
+                self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Desencapsulado y procesado")
 
-            self.log("SUCCESS", "✓", "Person A: HTTP 200 OK received. HTML parsed and rendered in browser window!", 7)
+            self.log("SUCCESS", "✓", "Persona A: se recibió HTTP 200 OK. ¡El HTML se analizó y se renderizó en la ventana del navegador!", 7)
 
             # Update browser UI
             if self.browser_url_entry:
@@ -381,19 +381,19 @@ class MissionWebAccess(BaseMission):
                 if self.selected_protocol == "HTTPS":
                     self.ssl_badge.config(text="🔒 HTTPS (TLS 1.3)", fg=theme.COLOR_SUCCESS)
                 else:
-                    self.ssl_badge.config(text="⚠ HTTP (Not Secure)", fg=theme.COLOR_WARNING)
+                    self.ssl_badge.config(text="⚠ HTTP (no seguro)", fg=theme.COLOR_WARNING)
 
             if self.browser_status:
-                self.browser_status.config(text="200 OK (Cargado)", fg=theme.COLOR_SUCCESS)
+                self.browser_status.config(text="200 OK (Página cargada)", fg=theme.COLOR_SUCCESS)
 
             self.render_webpage()
 
             self.complete_mission({
-                "Host objetivo": self.target_url,
+                "Equipo objetivo": self.target_url,
                 "Servidor DNS": f"{self.dns_server} (UDP 53)",
                 "IP resuelta": self.resolved_ip,
                 "Protocolo / puerto": f"{self.selected_protocol} (Puerto {self.selected_port})",
-                "Ruta de enrutamiento": f"Host LAN -> Gateway {self.gateway_ip} -> Internet -> Servidor {self.resolved_ip}",
+                "Ruta de enrutamiento": f"Equipo LAN -> Puerta de enlace {self.gateway_ip} -> Internet -> Servidor {self.resolved_ip}",
                 "Decisiones tomadas": self.decisions_made,
                 "Errores diagnosticados y corregidos": self.errors_repaired,
                 "Resultado": "Página web renderizada correctamente"
@@ -401,11 +401,11 @@ class MissionWebAccess(BaseMission):
 
     def _transmit_web_request(self):
         """Transmit HTTP request to server and get response."""
-        self.log("INFO", "→", f"Sending {self.selected_protocol} GET request through Gateway across Internet to Web Server...", None)
+        self.log("INFO", "→", f"Enviando la solicitud GET de {self.selected_protocol} a través de la puerta de enlace y de Internet hacia el servidor web...", None)
 
         def on_server_reached():
             self.packets_sent += 1
-            self.log("INFO", "✓", "Web Server (93.184.216.34): Decapsulated request, generated HTTP/1.1 200 OK Response (412 bytes).", 7)
+            self.log("INFO", "✓", "Servidor web (93.184.216.34): solicitud desencapsulada; generó la respuesta HTTP/1.1 200 OK (412 bytes).", 7)
             self.inspector_data.app_protocol = "HTTP/1.1 200 OK"
             self.inspector_data.payload_text = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html><html><body><h1>Example Domain</h1>...</body></html>"
             self.inspector_data.payload_hex = format_hex_dump(self.inspector_data.payload_text.encode())

@@ -33,7 +33,7 @@ class PacketInspectorData:
     frame_dst_mac: str = "AA:BB:CC:44:55:66"
     frame_src_mac: str = "AA:BB:CC:11:22:33"
     frame_type: str = "0x0800 (IPv4)"
-    frame_fcs: str = "0x7F2A9C11 (CRC32 Valid)"
+    frame_fcs: str = "0x7F2A9C11 (CRC32 válido)"
 
     # L3 Network IP Packet
     ip_version: str = "IPv4"
@@ -54,13 +54,13 @@ class PacketInspectorData:
 
     # L5 Session Information
     session_id: str = "SES-8849-B"
-    session_state: str = "ESTABLISHED"
+    session_state: str = "ESTABLECIDA"
     session_token: str = "tok_7721ab90"
 
     # L6 Presentation Information
     encoding: str = "UTF-8"
-    compression: str = "None (Raw)"
-    encryption: str = "None (Plaintext)"
+    compression: str = "Ninguno (sin procesar)"
+    encryption: str = "Ninguno (texto plano)"
 
     # L7 Application Payload
     app_protocol: str = "HTTP/1.1"

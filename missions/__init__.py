@@ -29,4 +29,4 @@ def get_mission_by_id(mission_id: int) -> BaseMission:
         inst = cls()
         if inst.mission_id == mission_id:
             return inst
-    raise ValueError(f"Unknown mission ID: {mission_id}")
+    raise ValueError(f"ID de misión desconocido: {mission_id}")

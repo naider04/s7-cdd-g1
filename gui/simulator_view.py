@@ -79,7 +79,7 @@ class SimulatorView(tk.Frame):
 
         tk.Label(
             title_box,
-            text=f"{self.mission.icon} Mission #{self.mission.mission_id}: {self.mission.title}",
+            text=f"{self.mission.icon} Misión n.º {self.mission.mission_id}: {self.mission.title}",
             font=theme.FONT_TITLE,
             fg=theme.TEXT_PRIMARY,
             bg=theme.BG_PANEL
@@ -254,12 +254,12 @@ class SimulatorView(tk.Frame):
     def _build_osi_guide(self, parent: tk.Widget):
         guide_text = (
             "LAS 7 CAPAS DEL MODELO OSI (GUÍA BASADA EN DECISIONES):\n\n"
-            "• Capa 7 (Aplicación): Interfaz humana y servicios de red (HTTP/HTTPS, DNS, FTP, chat).\n"
+            "• Capa 7 (Aplicación): Interfaz humana y servicios de red (HTTP/HTTPS, DNS, FTP, mensajería).\n"
             "• Capa 6 (Presentación): Codificaciones (UTF-8, ASCII), compresión (H.264), cifrado (TLS/AES). Un desajuste causa mojibake.\n"
-            "• Capa 5 (Sesión): Establecimiento, autenticación y cierre de canales de comunicación (SIP, Keep-Alive, tokens).\n"
+            "• Capa 5 (Sesión): Establecimiento, autenticación y cierre de canales de comunicación (SIP, latido Keep-Alive, tokens).\n"
             "• Capa 4 (Transporte): Protocolo de extremo a extremo (TCP fiable/ordenado vs UDP de baja latencia, puertos).\n"
-            "• Capa 3 (Red): Enrutamiento y direccionamiento IP lógico entre subredes interconectadas (routers, gateways, TTL).\n"
-            "• Capa 2 (Enlace de datos): Direccionamiento MAC físico, encapsulado local y detección de errores CRC32/FCS (switches, Ethernet).\n"
+            "• Capa 3 (Red): Enrutamiento y direccionamiento IP lógico entre subredes interconectadas (enrutadores, puertas de enlace, TTL).\n"
+            "• Capa 2 (Enlace de datos): Direccionamiento MAC físico, encapsulado local y detección de errores CRC32/FCS (conmutadores, Ethernet).\n"
             "• Capa 1 (Física): Transmisión cruda de bits por cobre, fibra o radio."
         )
         lbl = tk.Label(parent, text=guide_text, font=theme.FONT_SMALL, fg=theme.TEXT_SECONDARY, bg=theme.BG_CARD, justify=tk.LEFT)
@@ -271,7 +271,7 @@ class SimulatorView(tk.Frame):
         self.active_decision = decision
 
         # Highlight current active layer card
-        meta = theme.OSI_METADATA.get(decision.layer_num, {"name": f"Layer {decision.layer_num}", "color": theme.TEXT_ACCENT})
+        meta = theme.OSI_METADATA.get(decision.layer_num, {"name": f"Capa {decision.layer_num}", "color": theme.TEXT_ACCENT})
         self.sender_stack.update_layer_status(decision.layer_num, LayerStatus.ACTIVE, "Esperando decisión del usuario")
 
         # Clear existing decision widgets
@@ -287,7 +287,7 @@ class SimulatorView(tk.Frame):
 
         badge = tk.Label(
             header,
-            text=f"LAYER {decision.layer_num} — {meta['name'].upper()}",
+            text=f"CAPA {decision.layer_num} — {meta['name'].upper()}",
             font=theme.FONT_TINY,
             fg="#ffffff",
             bg=meta['color'],

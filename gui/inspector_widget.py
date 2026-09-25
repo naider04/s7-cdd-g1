@@ -202,10 +202,10 @@ class InspectorWidget(tk.Frame):
 
         # Visual encapsulation hierarchy bar
         encap_text = (
-            f"[ Eth Header (Dst: {d.frame_dst_mac[:8]}..) "
-            f"[ IP (Dst: {d.ip_dst}) "
-            f"[ {d.transport_protocol} (DstPort: {d.dst_port}) "
-            f"[ {d.app_protocol} Payload: {d.raw_size_bytes}B ] ] ] "
+            f"[ Cabecera Ethernet (Dest.: {d.frame_dst_mac[:8]}..) "
+            f"[ IP (Dest.: {d.ip_dst}) "
+            f"[ {d.transport_protocol} (Puerto de destino: {d.dst_port}) "
+            f"[ {d.app_protocol} Carga útil: {d.raw_size_bytes}B ] ] ] "
             f"FCS: {d.frame_fcs[:10]} ]"
         )
         self.encap_banner.config(text=encap_text)

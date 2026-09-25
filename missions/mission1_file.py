@@ -24,10 +24,10 @@ class MissionFileTransfer(BaseMission):
             title="Enviar un archivo grande",
             icon="📁",
             subtitle="Entregar un video de 500 MB a Persona B con decisiones de confiabilidad",
-            objective="Entregar 'video.mp4' (500 MB) por la red. Elige parámetros del protocolo, realiza el three-way handshake y maneja pérdidas reales de paquetes.",
+            objective="Entregar 'video.mp4' (500 MB) por la red. Elige parámetros del protocolo, realiza el establecimiento de conexión de tres vías y maneja pérdidas reales de paquetes.",
             concepts=[
-                "Segmentación vs límites MTU",
-                "Handshake TCP de 3 vías (SYN/ACK)",
+                "Segmentación frente a límites MTU",
+                "Establecimiento de conexión TCP de tres vías (SYN/ACK)",
                 "Confiabilidad: TCP vs UDP",
                 "Pérdida de paquetes y retransmisión rápida",
                 "Integridad de archivo extremo a extremo (MD5/FCS)"
@@ -108,18 +108,18 @@ class MissionFileTransfer(BaseMission):
                 layer_num=7,
                 title="Capa de Aplicación — Preparación de datos",
                 prompt="Persona A tiene un archivo de video de 500 MB. ¿Cómo debe prepararlo la aplicación para transmitirlo?",
-                explanation="Physical network links cannot transmit an arbitrary 500 MB stream in one piece due to Maximum Transmission Unit (MTU) hardware limits (typically 1500 bytes per Ethernet frame).",
+                explanation="Los enlaces físicos de red no pueden transmitir un flujo arbitrario de 500 MB en una sola pieza debido a los límites de hardware de la Unidad de Transmisión Máxima (MTU), normalmente 1500 bytes por marco Ethernet.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "segment",
-                        "title": "Segment into discrete sequential chunks (4 chunks of 125 MB)",
-                        "desc": "Divides the 500 MB file into manageable, numbered chunks that fit network MTU limits."
+                        "title": "Segmentar en bloques secuenciales discretos (4 bloques de 125 MB)",
+                        "desc": "Divide el archivo de 500 MB en bloques numerados y manejables que se ajustan a los límites de MTU de la red."
                     },
                     {
                         "id": "monolithic",
-                        "title": "Send entire 500 MB as one single massive unsegmented packet",
-                        "desc": "Tries to blast the entire 500 MB without splitting. (Will test network limits!)"
+                        "title": "Enviar los 500 MB completos como un único paquete masivo sin segmentar",
+                        "desc": "Intenta enviar los 500 MB completos sin dividirlos. (¡Se probarán los límites de la red!)"
                     }
                 ],
                 default_value="segment",
@@ -131,18 +131,18 @@ class MissionFileTransfer(BaseMission):
                 layer_num=4,
                 title="Capa de Transporte — Selección de protocolo",
                 prompt="¿Qué protocolo de transporte debe gestionar la entrega de este video de 500 MB?",
-                explanation="TCP guarantees ordered and complete delivery via acknowledgments, while UDP sends datagrams without verifying delivery or retransmitting losses.",
+                explanation="TCP garantiza una entrega ordenada y completa mediante acuses de recibo, mientras que UDP envía datagramas sin verificar la entrega ni retransmitir pérdidas.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "tcp",
-                        "title": "TCP (Transmission Control Protocol) — Reliable & Connection-Oriented",
-                        "desc": "Establishes a connection, numbers every segment, requests acknowledgments, and retransmits lost packets."
+                        "title": "TCP (Protocolo de control de transmisión) — Confiable y orientado a conexión",
+                        "desc": "Establece una conexión, numera cada segmento, solicita acuses de recibo y retransmite los paquetes perdidos."
                     },
                     {
                         "id": "udp",
-                        "title": "UDP (User Datagram Protocol) — Connectionless & Fast",
-                        "desc": "Sends datagrams immediately without connection overhead or retransmissions."
+                        "title": "UDP (Protocolo de datagramas de usuario) — Sin conexión y rápido",
+                        "desc": "Envía datagramas inmediatamente sin sobrecarga de conexión ni retransmisiones."
                     }
                 ],
                 default_value="tcp",
@@ -153,24 +153,24 @@ class MissionFileTransfer(BaseMission):
                 stage_id="l4_handshake",
                 layer_num=4,
                 title="Capa de Transporte — Establecimiento de conexión",
-                prompt="To establish a reliable transport connection, Person A must begin the 3-Way Handshake. Which TCP control flag must be sent first?",
-                explanation="The TCP handshake synchronizes sequence numbers between sender and receiver before any user data payload is transmitted.",
+                prompt="Para establecer una conexión de transporte confiable, Persona A debe iniciar el establecimiento de conexión de tres vías. ¿Qué bandera de control TCP debe enviarse primero?",
+                explanation="El establecimiento de conexión TCP sincroniza los números de secuencia entre el emisor y el receptor antes de transmitir cualquier carga útil de datos de usuario.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "syn",
-                        "title": "SYN (Synchronize Sequence Number)",
-                        "desc": "Initiates connection with initial sequence number ISN=1000."
+                        "title": "SYN (Sincronizar número de secuencia)",
+                        "desc": "Inicia la conexión con el número de secuencia inicial ISN=1000."
                     },
                     {
                         "id": "ack",
-                        "title": "ACK (Acknowledgment)",
-                        "desc": "Acknowledges previously received data (invalid before connection is initiated)."
+                        "title": "ACK (Acuse de recibo)",
+                        "desc": "Acusa recibo de los datos recibidos previamente (no válido antes de iniciar la conexión)."
                     },
                     {
                         "id": "fin",
-                        "title": "FIN (Finish / Terminate)",
-                        "desc": "Signals connection termination."
+                        "title": "FIN (Finalizar / Terminar)",
+                        "desc": "Indica la terminación de la conexión."
                     }
                 ],
                 default_value="syn",
@@ -181,19 +181,19 @@ class MissionFileTransfer(BaseMission):
                 stage_id="l3_addressing",
                 layer_num=3,
                 title="Capa de Red — Direccionamiento IP lógico",
-                prompt="Specify Person B's destination IPv4 address for routing across core routers:",
-                explanation="Layer 3 routers use the destination IP header to determine the next-hop interface along the path.",
+                prompt="Especifica la dirección IPv4 de destino de Persona B para el enrutamiento a través de los enrutadores centrales:",
+                explanation="Los enrutadores de capa 3 utilizan la IP de destino del encabezado para determinar la interfaz del próximo salto a lo largo de la ruta.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "192.168.1.25",
-                        "title": "192.168.1.25 (Valid IP of Person B)",
-                        "desc": "Routes packet to Person B's network interface."
+                        "title": "192.168.1.25 (IP válida de Persona B)",
+                        "desc": "Enruta el paquete hacia la interfaz de red de Persona B."
                     },
                     {
                         "id": "192.168.1.99",
-                        "title": "192.168.1.99 (Unassigned / Wrong Host)",
-                        "desc": "Destination host does not exist on the local network."
+                        "title": "192.168.1.99 (Equipo no asignado / incorrecto)",
+                        "desc": "El equipo de destino no existe en la red local."
                     }
                 ],
                 default_value="192.168.1.25",
@@ -203,20 +203,20 @@ class MissionFileTransfer(BaseMission):
             StageDecision(
                 stage_id="net_loss_response",
                 layer_num=4,
-                title="Evento de red — Manejo de pérdida en router",
-                prompt="Core Router buffer congested! Chunk #3 was DROPPED. How should Person A react?",
-                explanation="In reliable networks, packet loss must be detected and resolved to prevent file corruption.",
+                title="Evento de red — Manejo de pérdida en el enrutador",
+                prompt="¡El búfer del enrutador central está congestionado! Se descartó el bloque n.º 3. ¿Cómo debe reaccionar Persona A?",
+                explanation="En redes confiables, la pérdida de paquetes debe detectarse y resolverse para evitar la corrupción del archivo.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "retransmit",
-                        "title": "Fast Retransmit Chunk #3 upon duplicate ACK (TCP)",
-                        "desc": "Resend missing Chunk #3 so Person B can reassemble the file without data loss."
+                        "title": "Retransmitir rápidamente el bloque n.º 3 al recibir un ACK duplicado (TCP)",
+                        "desc": "Reenvía el bloque n.º 3 que falta para que Persona B pueda reensamblar el archivo sin pérdida de datos."
                     },
                     {
                         "id": "skip",
-                        "title": "Ignore missing chunk and continue to next stage",
-                        "desc": "Proceed without Chunk #3 (Simulates UDP behavior or ignoring packet loss)."
+                        "title": "Ignorar el bloque que falta y continuar a la siguiente etapa",
+                        "desc": "Continúa sin el bloque n.º 3 (simula el comportamiento de UDP o ignora la pérdida de paquetes)."
                     }
                 ],
                 default_value="retransmit",
@@ -227,11 +227,11 @@ class MissionFileTransfer(BaseMission):
                 stage_id="l7_verify",
                 layer_num=7,
                 title="Desencapsulación del receptor y verificación de integridad",
-                prompt="All received data is arriving at Person B. How should Person B's Application Layer finalize the file?",
-                explanation="When all layers decapsulate, the application verifies the cryptographic hash against the sender's original manifest.",
+                prompt="Todos los datos recibidos llegan a Persona B. ¿Cómo debe finalizar el archivo la capa de aplicación de Persona B?",
+                explanation="Cuando todas las capas se desencapsulan, la aplicación verifica el hash criptográfico contra el manifiesto original del emisor.",
                 input_type="ACTION",
                 options=[],
-                button_label="Verificar checksum MD5 y guardar video ▶"
+                button_label="Verificar suma de verificación MD5 y guardar video ▶"
             )
         ]
 
@@ -244,38 +244,38 @@ class MissionFileTransfer(BaseMission):
         if stage.stage_id == "l7_packaging":
             if user_value == "monolithic":
                 # Consequence: MTU violation!
-                self.update_layer("sender", 7, LayerStatus.ERROR, "MTU Buffer Overflow (500 MB unsplit)", has_error=True)
-                self.log("ERROR", "⚠", "Consequence: Ethernet Maximum Transmission Unit (MTU) is 1500 bytes. A 500 MB unsplit payload causes immediate buffer overflow!", 7)
+                self.update_layer("sender", 7, LayerStatus.ERROR, "Desbordamiento del búfer MTU (500 MB sin segmentar)", has_error=True)
+                self.log("ERROR", "⚠", "Consecuencia: la Unidad de Transmisión Máxima (MTU) de Ethernet es de 1500 bytes. ¡Una carga de 500 MB sin segmentar provoca un desbordamiento inmediato del búfer!", 7)
 
                 def fix_packaging():
                     self.is_segmented = True
-                    self.update_layer("sender", 7, LayerStatus.COMPLETE, "Segmented into 4 chunks (125 MB each)")
-                    self.log("SUCCESS", "✓", "Repaired: File partitioned into 4 discrete chunks with sequence tags.", 7)
+                    self.update_layer("sender", 7, LayerStatus.COMPLETE, "Datos segmentados en 4 bloques (125 MB cada uno)")
+                    self.log("SUCCESS", "✓", "Reparación: archivo dividido en 4 bloques discretos con etiquetas de secuencia.", 7)
                     self._advance_to_next_stage()
 
                 issue = TroubleshootIssue(
                     layer_num=7,
-                    title="MTU Limit Violation (Oversized Payload)",
-                    summary="Network devices reject packets exceeding the MTU (Maximum Transmission Unit, typically 1500 bytes). A 500 MB single packet cannot be transmitted.",
+                    title="Violación del límite MTU (carga sobredimensionada)",
+                    summary="Los dispositivos de red rechazan paquetes que superan el MTU (Unidad de Transmisión Máxima, normalmente 1500 bytes). Un único paquete de 500 MB no se puede transmitir.",
                     details=(
-                        "Physical layer transmission limits require data to be divided into segments.\n\n"
-                        "When transmitting large datasets, the Application and Transport layers segment data into manageable chunks.\n"
-                        "This allows individual lost fragments to be retransmitted rather than re-sending all 500 MB."
+                        "Los límites de transmisión de la capa física exigen dividir los datos en segmentos.\n\n"
+                        "Al transmitir conjuntos de datos grandes, las capas de Aplicación y Transporte segmentan los datos en bloques manejables.\n"
+                        "Esto permite retransmitir solo los fragmentos perdidos en lugar de reenviar los 500 MB completos."
                     ),
                     options=[
                         RepairOption(
                             id="opt_segment",
-                            title="Partition into discrete chunks (Recommended)",
-                            description="Split 500 MB into 4 numbered chunks with sequence tracking.",
+                            title="Dividir en bloques discretos (recomendado)",
+                            description="Dividir los 500 MB en 4 bloques numerados con seguimiento de secuencia.",
                             is_correct=True,
-                            feedback="Correct! Segmentation allows efficient routing and error recovery."
+                            feedback="¡Correcto! La segmentación permite un enrutamiento eficiente y la recuperación de errores."
                         ),
                         RepairOption(
                             id="opt_force",
-                            title="Force single packet anyway",
-                            description="Attempt to force oversized buffer onto link.",
+                            title="Forzar un único paquete de todos modos",
+                            description="Intentar forzar un búfer sobredimensionado en el enlace.",
                             is_correct=False,
-                            feedback="Incorrect. Network cards and routers will immediately discard packets exceeding MTU."
+                            feedback="Incorrecto. Las tarjetas de red y los enrutadores descartarán de inmediato los paquetes que superen el MTU."
                         )
                     ],
                     on_repair_success=fix_packaging
@@ -284,10 +284,10 @@ class MissionFileTransfer(BaseMission):
                 return
 
             self.is_segmented = True
-            self.update_layer("sender", 7, LayerStatus.COMPLETE, "Data Segmented (4 x 125 MB)")
-            self.log("INFO", "✓", "L7 (Application): 'video.mp4' partitioned into 4 chunks (Seq #1-#4).", 7)
-            self.inspector_data.app_protocol = "FTP / Media Stream"
-            self.inspector_data.payload_text = "[video.mp4: 4 Chunks, Total 524,288,000 bytes]"
+            self.update_layer("sender", 7, LayerStatus.COMPLETE, "Datos segmentados (4 x 125 MB)")
+            self.log("INFO", "✓", "L7 (Aplicación): 'video.mp4' dividido en 4 bloques (secuencias n.º 1 a 4).", 7)
+            self.inspector_data.app_protocol = "FTP / Flujo multimedia"
+            self.inspector_data.payload_text = "[video.mp4: 4 bloques; total: 524 288 000 bytes]"
             self.inspector_data.payload_hex = format_hex_dump(b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00isommp42")
             self.inspector_data.raw_size_bytes = 524288000
             self.notify_inspector()
@@ -296,58 +296,58 @@ class MissionFileTransfer(BaseMission):
         elif stage.stage_id == "l4_protocol":
             self.selected_protocol = "TCP" if user_value == "tcp" else "UDP"
             if self.selected_protocol == "UDP":
-                self.log("WARNING", "⚠", "User chose UDP: Warning! UDP does not guarantee delivery, track sequences, or retransmit lost packets.", 4)
-                self.update_layer("sender", 4, LayerStatus.ACTIVE, "UDP Datagrams (Unreliable)")
+                self.log("WARNING", "⚠", "El usuario eligió UDP: ¡Advertencia! UDP no garantiza la entrega, no rastrea secuencias ni retransmite paquetes perdidos.", 4)
+                self.update_layer("sender", 4, LayerStatus.ACTIVE, "Datagramas UDP (no confiables)")
                 self.inspector_data.transport_protocol = "UDP"
-                self.inspector_data.flags = "None (Connectionless)"
+                self.inspector_data.flags = "Ninguna (sin conexión)"
                 self.inspector_data.seq_num = 0
                 self.notify_inspector()
                 # Skip handshake stage because UDP is connectionless!
                 self.current_stage_index += 1  # jump past handshake
                 self._advance_to_next_stage()
             else:
-                self.log("INFO", "✓", "User chose TCP: Enables sequence numbers, acknowledgments, and automatic repeat requests (ARQ).", 4)
-                self.update_layer("sender", 4, LayerStatus.ACTIVE, "TCP Selected (Awaiting Handshake)")
+                self.log("INFO", "✓", "El usuario eligió TCP: habilita números de secuencia, acuses de recibo y solicitudes automáticas de repetición (ARQ).", 4)
+                self.update_layer("sender", 4, LayerStatus.ACTIVE, "TCP seleccionado (esperando el establecimiento de conexión)")
                 self.inspector_data.transport_protocol = "TCP"
                 self.notify_inspector()
                 self._advance_to_next_stage()
 
         elif stage.stage_id == "l4_handshake":
             if user_value != "syn":
-                self.update_layer("sender", 4, LayerStatus.ERROR, f"Invalid TCP Handshake Flag ({user_value.upper()})", has_error=True)
-                self.log("ERROR", "⚠", f"Consequence: Cannot send {user_value.upper()} to start connection! TCP RFC 793 requires initial packet to carry SYN flag.", 4)
+                self.update_layer("sender", 4, LayerStatus.ERROR, f"Bandera no válida para establecer la conexión TCP ({user_value.upper()})", has_error=True)
+                self.log("ERROR", "⚠", f"Consecuencia: no se puede enviar {user_value.upper()} para iniciar la conexión. RFC 793 de TCP exige que el paquete inicial lleve la bandera SYN.", 4)
 
                 def fix_handshake():
-                    self.update_layer("sender", 4, LayerStatus.COMPLETE, "TCP 3-Way Handshake Established")
-                    self.log("SUCCESS", "✓", "Handshake Completed: SYN sent -> SYN/ACK received -> ACK sent. Connection ESTABLISHED.", 4)
+                    self.update_layer("sender", 4, LayerStatus.COMPLETE, "Establecimiento de conexión TCP de tres vías completado")
+                    self.log("SUCCESS", "✓", "Conexión establecida: SYN enviado -> SYN-ACK recibido -> ACK enviado.", 4)
                     self._advance_to_next_stage()
 
                 issue = TroubleshootIssue(
                     layer_num=4,
-                    title="TCP Handshake State Machine Error",
-                    summary=f"TCP connection cannot be opened with flag {user_value.upper()}. Initial packet must have SYN flag.",
+                    title="Error de la máquina de estados de conexión TCP",
+                    summary=f"No se puede abrir la conexión TCP con la bandera {user_value.upper()}. El paquete inicial debe llevar la bandera SYN.",
                     details=(
-                        "Before transmitting data over TCP, both endpoints must synchronize sequence numbers.\n\n"
-                        "The three-way handshake follows a strict sequence:\n"
-                        "1. Sender sends SYN (Synchronize)\n"
-                        "2. Receiver replies with SYN-ACK (Synchronize + Acknowledge)\n"
-                        "3. Sender replies with ACK (Acknowledge)\n\n"
-                        "Sending an ACK or FIN without prior connection will cause the receiver to drop the packet."
+                        "Antes de transmitir datos mediante TCP, ambos extremos deben sincronizar sus números de secuencia.\n\n"
+                        "El establecimiento de conexión de tres vías sigue una secuencia estricta:\n"
+                        "1. El emisor envía SYN (sincronizar)\n"
+                        "2. El receptor responde con SYN-ACK (sincronizar + acusar recibo)\n"
+                        "3. El emisor responde con ACK (acusar recibo)\n\n"
+                        "Enviar un ACK o FIN sin una conexión previa hará que el receptor descarte el paquete."
                     ),
                     options=[
                         RepairOption(
                             id="send_syn",
-                            title="Send SYN Flag to open connection (Recommended)",
-                            description="Send TCP segment with SYN flag set and initial sequence number.",
+                            title="Enviar la bandera SYN para abrir la conexión (recomendado)",
+                            description="Enviar un segmento TCP con la bandera SYN activa y el número de secuencia inicial.",
                             is_correct=True,
-                            feedback="Correct! Receiver responds with SYN-ACK and connection is established."
+                            feedback="¡Correcto! El receptor responde con SYN-ACK y se establece la conexión."
                         ),
                         RepairOption(
                             id="skip_handshake",
-                            title="Skip handshake and blast data",
-                            description="Send data segments immediately without connection.",
+                            title="Omitir el establecimiento de conexión y enviar los datos",
+                            description="Enviar segmentos de datos inmediatamente sin conexión.",
                             is_correct=False,
-                            feedback="Incorrect. The receiving operating system will discard data on an unestablished TCP socket."
+                            feedback="Incorrecto. El sistema operativo receptor descartará los datos en un socket TCP no establecido."
                         )
                     ],
                     on_repair_success=fix_handshake
@@ -356,10 +356,10 @@ class MissionFileTransfer(BaseMission):
                 return
 
             # Successful handshake animation
-            self.log("INFO", "→", "Transmitting TCP SYN packet to Person B...", 4)
+            self.log("INFO", "→", "Transmitiendo el paquete TCP SYN a Persona B...", 4)
             def on_syn_reached():
-                self.log("INFO", "✓", "Person B received SYN, replied with SYN-ACK!", 4)
-                self.update_layer("sender", 4, LayerStatus.COMPLETE, "TCP Handshake Complete (ESTABLISHED)")
+                self.log("INFO", "✓", "Persona B recibió SYN y respondió con SYN-ACK.", 4)
+                self.update_layer("sender", 4, LayerStatus.COMPLETE, "Establecimiento de conexión TCP completado (ESTABLECIDA)")
                 self.inspector_data.flags = "[SYN, ACK]"
                 self.notify_inspector()
                 self._advance_to_next_stage()
@@ -373,38 +373,38 @@ class MissionFileTransfer(BaseMission):
             self.dest_ip = user_value
             if self.dest_ip == "192.168.1.99":
                 # Consequence: Host unreachable!
-                self.update_layer("sender", 3, LayerStatus.ERROR, "ICMP Host Unreachable (192.168.1.99)", has_error=True)
-                self.log("ERROR", "⚠", "Consequence: Destination IP 192.168.1.99 does not exist on network! Core Router dropped frame with ICMP Destination Unreachable.", 3)
+                self.update_layer("sender", 3, LayerStatus.ERROR, "ICMP: equipo inaccesible (192.168.1.99)", has_error=True)
+                self.log("ERROR", "⚠", "Consecuencia: la IP de destino 192.168.1.99 no existe en la red. ¡El enrutador central descartó el marco con ICMP Destination Unreachable!", 3)
 
                 def fix_ip():
                     self.dest_ip = "192.168.1.25"
-                    self.update_layer("sender", 3, LayerStatus.COMPLETE, "Destination IP set to 192.168.1.25")
-                    self.log("SUCCESS", "✓", "Repaired: Destination IP updated to 192.168.1.25 (Person B).", 3)
+                    self.update_layer("sender", 3, LayerStatus.COMPLETE, "IP de destino establecida en 192.168.1.25")
+                    self.log("SUCCESS", "✓", "Reparación: IP de destino actualizada a 192.168.1.25 (Persona B).", 3)
                     self._transmit_initial_chunks()
 
                 issue = TroubleshootIssue(
                     layer_num=3,
-                    title="Network Layer Routing Error: Host Unreachable",
-                    summary="The packet was addressed to 192.168.1.99, which has no active ARP entry or host on the network.",
+                    title="Error de enrutamiento de capa de red: equipo inaccesible",
+                    summary="El paquete se dirigió a 192.168.1.99, que no tiene una entrada ARP activa ni un equipo en la red.",
                     details=(
-                        "In Layer 3 (Network), the sender must address packets to the valid logical IP of the intended destination.\n"
-                        "Person B's actual IP address is 192.168.1.25.\n\n"
-                        "When addressing an unassigned IP (192.168.1.99), ARP resolution fails and router drops the transmission."
+                        "En la capa 3 (Red), el emisor debe dirigir los paquetes a la IP lógica válida del destino previsto.\n"
+                        "La dirección IP real de Persona B es 192.168.1.25.\n\n"
+                        "Al dirigir un paquete a una IP no asignada (192.168.1.99), falla la resolución ARP y el enrutador descarta la transmisión."
                     ),
                     options=[
                         RepairOption(
                             id="fix_dest_ip",
-                            title="Set Destination IP to 192.168.1.25 (Person B)",
-                            description="Use Person B's verified IP address.",
+                            title="Establecer la IP de destino en 192.168.1.25 (Persona B)",
+                            description="Usar la dirección IP verificada de Persona B.",
                             is_correct=True,
-                            feedback="Correct! Packet routes directly to Person B."
+                            feedback="¡Correcto! El paquete se enruta directamente a Persona B."
                         ),
                         RepairOption(
                             id="ignore_ip",
-                            title="Keep 192.168.1.99",
-                            description="Hope another computer forwards it.",
+                            title="Mantener 192.168.1.99",
+                            description="Esperar que otro equipo lo reenvíe.",
                             is_correct=False,
-                            feedback="Incorrect. No host exists at 192.168.1.99."
+                            feedback="Incorrecto. No existe ningún equipo en 192.168.1.99."
                         )
                     ],
                     on_repair_success=fix_ip
@@ -412,10 +412,10 @@ class MissionFileTransfer(BaseMission):
                 self.trigger_error(issue)
                 return
 
-            self.update_layer("sender", 3, LayerStatus.COMPLETE, "Routed to 192.168.1.25")
-            self.update_layer("sender", 2, LayerStatus.COMPLETE, "Ethernet Frames (MAC 00:1A:2B:3C:4D:5E)")
-            self.update_layer("sender", 1, LayerStatus.COMPLETE, "Bitstream Generated")
-            self.log("INFO", "✓", "L3/L2/L1: Encapsulated into IP Packets & Ethernet Frames. Ready for network transit.", 3)
+            self.update_layer("sender", 3, LayerStatus.COMPLETE, "Enrutado a 192.168.1.25")
+            self.update_layer("sender", 2, LayerStatus.COMPLETE, "Marcos Ethernet (MAC 00:1A:2B:3C:4D:5E)")
+            self.update_layer("sender", 1, LayerStatus.COMPLETE, "Flujo de bits generado")
+            self.log("INFO", "✓", "L3/L2/L1: encapsulado en paquetes IP y marcos Ethernet. Listo para el tránsito de red.", 3)
             self._transmit_initial_chunks()
 
         elif stage.stage_id == "net_loss_response":
@@ -423,41 +423,41 @@ class MissionFileTransfer(BaseMission):
                 # Consequence: File corrupted!
                 self.chunks_received[3] = True  # chunk 4 arrived, but 3 missing
                 self._update_chunk_ui()
-                self.update_layer("receiver", 4, LayerStatus.ERROR, "Missing Chunk #3! File Corrupted", has_error=True)
-                self.log("ERROR", "⚠", "Consequence: Chunk #3 was lost! File at Person B is only 75% complete and cannot be opened.", 4)
+                self.update_layer("receiver", 4, LayerStatus.ERROR, "¡Falta el bloque n.º 3! Archivo corrupto", has_error=True)
+                self.log("ERROR", "⚠", "Consecuencia: ¡se perdió el bloque n.º 3! El archivo en Persona B solo está completo al 75 % y no se puede abrir.", 4)
 
                 def fix_to_tcp():
                     self.selected_protocol = "TCP"
                     self.retransmitted_chunk_3 = True
                     self.chunks_received[2] = True
-                    self.log("SUCCESS", "✓", "Repaired to TCP Fast Retransmit: Receiver sent DupACK, Sender retransmitted Chunk #3!", 4)
-                    self.update_layer("receiver", 4, LayerStatus.COMPLETE, "All 4 Chunks Reassembled (TCP)")
+                    self.log("SUCCESS", "✓", "Reparación: retransmisión rápida TCP; el receptor envió un ACK duplicado y el emisor retransmitió el bloque n.º 3.", 4)
+                    self.update_layer("receiver", 4, LayerStatus.COMPLETE, "Los 4 bloques reensamblados (TCP)")
                     self._update_chunk_ui()
                     self._advance_to_next_stage()
 
                 issue = TroubleshootIssue(
                     layer_num=4,
-                    title="Data Loss Consequence (Missing Chunk #3)",
-                    summary="Person B cannot open 'video.mp4' because Chunk #3 was dropped and not retransmitted.",
+                    title="Consecuencia de pérdida de datos (falta el bloque n.º 3)",
+                    summary="Persona B no puede abrir 'video.mp4' porque el bloque n.º 3 se descartó y no se retransmitió.",
                     details=(
-                        "This demonstrates the fundamental consequence of protocol choice:\n\n"
-                        "• In UDP or un-retransmitted transfers, lost chunks leave permanent holes in files.\n"
-                        "• In TCP, lost packets trigger Duplicate ACKs, causing Fast Retransmit so the receiver recovers 100% of data."
+                        "Esto demuestra la consecuencia fundamental de elegir un protocolo:\n\n"
+                        "• En transferencias UDP o sin retransmisión, los bloques perdidos dejan huecos permanentes en el archivo.\n"
+                        "• En TCP, los paquetes perdidos activan ACK duplicados y provocan una retransmisión rápida para que el receptor recupere el 100 % de los datos."
                     ),
                     options=[
                         RepairOption(
                             id="repair_retransmit",
-                            title="Perform TCP Fast Retransmission for Chunk #3",
-                            description="Retransmit missing Chunk #3 so the file can be reconstructed with 100% integrity.",
+                            title="Realizar una retransmisión rápida TCP del bloque n.º 3",
+                            description="Retransmitir el bloque n.º 3 que falta para reconstruir el archivo con un 100 % de integridad.",
                             is_correct=True,
-                            feedback="Correct! Chunk #3 is retransmitted and acknowledged."
+                            feedback="¡Correcto! El bloque n.º 3 se retransmite y se acusa recibo."
                         ),
                         RepairOption(
                             id="repair_corrupt",
-                            title="Accept corrupted 75% file",
-                            description="Leave file incomplete.",
+                            title="Aceptar un archivo corrupto al 75 %",
+                            description="Dejar el archivo incompleto.",
                             is_correct=False,
-                            feedback="Incorrect. MP4 container headers and keyframes are corrupted."
+                            feedback="Incorrecto. Las cabeceras del contenedor MP4 y los fotogramas clave están corruptos."
                         )
                     ],
                     on_repair_success=fix_to_tcp
@@ -466,35 +466,35 @@ class MissionFileTransfer(BaseMission):
                 return
 
             # User chose retransmit!
-            self.log("INFO", "→", "Fast Retransmit: Person A retransmitting missing Chunk #3...", 4)
+            self.log("INFO", "→", "Retransmisión rápida: Persona A está reenviando el bloque n.º 3 que falta...", 4)
             def on_retrans_reached():
                 self.chunks_received[2] = True
                 self.chunks_received[3] = True
                 self.retransmitted_chunk_3 = True
-                self.log("SUCCESS", "✓", "Chunk #3 arrived and verified! All 4 chunks accounted for in receiver buffer.", 4)
+                self.log("SUCCESS", "✓", "¡El bloque n.º 3 llegó y fue verificado! Los 4 bloques están contabilizados en el búfer del receptor.", 4)
                 self._update_chunk_ui()
-                self.update_layer("receiver", 4, LayerStatus.COMPLETE, "All 4 Chunks Reassembled (TCP)")
+                self.update_layer("receiver", 4, LayerStatus.COMPLETE, "Los 4 bloques reensamblados (TCP)")
                 self._advance_to_next_stage()
 
             if self.cb_network_animate:
-                self.cb_network_animate("Router", "Person B", "PACKET", "Chunk 3 (Retransmit)", False, on_retrans_reached)
+                self.cb_network_animate("Router", "Person B", "PACKET", "Bloque 3 (retransmisión)", False, on_retrans_reached)
             else:
                 on_retrans_reached()
 
         elif stage.stage_id == "l7_verify":
             # Final verification
             for lyr in range(1, 8):
-                self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Decapsulated & Verified")
+                self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Desencapsulado y verificado")
 
-            self.log("SUCCESS", "✓", "Person B: MD5 Checksum (e2fc714c4727ee9395f324dd2e7f331f) Matches 100%! 'video.mp4' (500 MB) Saved.", 7)
+            self.log("SUCCESS", "✓", "Persona B: la suma de verificación MD5 (e2fc714c4727ee9395f324dd2e7f331f) coincide al 100 %. ¡'video.mp4' (500 MB) guardado!", 7)
             if self.status_lbl:
-                self.status_lbl.config(text="✓ File Transfer 100% Complete & Verified! All decisions succeeded.", fg=theme.COLOR_SUCCESS)
+                self.status_lbl.config(text="✓ ¡Transferencia de archivos completada y verificada al 100 %! Todas las decisiones fueron correctas.", fg=theme.COLOR_SUCCESS)
 
             self.complete_mission({
                 "Nombre del archivo": "video.mp4",
                 "Tamaño total": "500 MB",
                 "Protocolo usado": self.selected_protocol,
-                "Handshake": "SYN → SYN-ACK → ACK verificado",
+                "Establecimiento de conexión": "SYN → SYN-ACK → ACK verificado",
                 "Paquetes enviados/recibidos": f"{self.packets_sent} enviados / {self.packets_received} recibidos",
                 "Decisiones tomadas": self.decisions_made,
                 "Errores diagnosticados y corregidos": self.errors_repaired,
@@ -503,7 +503,7 @@ class MissionFileTransfer(BaseMission):
 
     def _transmit_initial_chunks(self):
         """Animate transmission of chunks 1, 2, and dropped chunk 3."""
-        self.log("INFO", "→", "Transmitting Chunk #1 & #2 across network...", None)
+        self.log("INFO", "→", "Transmitiendo los bloques n.º 1 y 2 por la red...", None)
         def on_c1_2_reached():
             self.chunks_received[0] = True
             self.chunks_received[1] = True
@@ -512,7 +512,7 @@ class MissionFileTransfer(BaseMission):
             self._update_chunk_ui()
 
             # Now Chunk 3 drops at Router!
-            self.log("WARNING", "⚠", "Core Router buffer congested: Chunk #3 DROPPED in transit!", None)
+            self.log("WARNING", "⚠", "Búfer del enrutador central congestionado: ¡se descartó el bloque n.º 3 en tránsito!", None)
             self.packets_sent += 1
             self.packets_lost += 1
 
@@ -521,12 +521,12 @@ class MissionFileTransfer(BaseMission):
                 self._advance_to_next_stage()
 
             if self.cb_network_animate:
-                self.cb_network_animate("Person A", "Router", "PACKET", "Chunk #3", True, on_c3_dropped)
+                self.cb_network_animate("Person A", "Router", "PACKET", "Bloque n.º 3", True, on_c3_dropped)
             else:
                 on_c3_dropped()
 
         if self.cb_network_animate:
-            self.cb_network_animate("Person A", "Person B", "PACKET", "Chunks #1 & #2", False, on_c1_2_reached)
+            self.cb_network_animate("Person A", "Person B", "PACKET", "Bloques n.º 1 y 2", False, on_c1_2_reached)
         else:
             on_c1_2_reached()
 
@@ -550,7 +550,7 @@ class MissionFileTransfer(BaseMission):
             if rec_count == 4:
                 self.status_lbl.config(text="✓ ¡Los 4 bloques fueron recibidos! Esperando verificación MD5.", fg=theme.COLOR_SUCCESS)
             elif rec_count > 0:
-                self.status_lbl.config(text=f"Recibiendo bloques... {rec_count}/4 ({int(pct)}% completado)", fg=theme.TEXT_ACCENT)
+                self.status_lbl.config(text=f"Recibiendo bloques... {rec_count}/4 ({int(pct)} % completado)", fg=theme.TEXT_ACCENT)
 
     def _advance_to_next_stage(self):
         self.current_stage_index += 1

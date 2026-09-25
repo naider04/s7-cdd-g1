@@ -39,42 +39,42 @@ OSI_COLORS = {
 OSI_METADATA = {
     7: {
         "name": "Aplicación",
-        "pdu": "Data",
+        "pdu": "Datos",
         "description": "Aplicaciones de red, interfaz de usuario, HTTP, SMTP, DNS y protocolos.",
         "icon": "📱",
         "color": OSI_COLORS[7]
     },
     6: {
         "name": "Presentación",
-        "pdu": "Data",
+        "pdu": "Datos",
         "description": "Representación de datos, codificación de caracteres (UTF-8/ASCII), compresión y cifrado.",
         "icon": "🔐",
         "color": OSI_COLORS[6]
     },
     5: {
         "name": "Sesión",
-        "pdu": "Data",
+        "pdu": "Datos",
         "description": "Comunicación entre hosts, establecimiento de sesión, gestión de tokens y sincronización.",
         "icon": "🤝",
         "color": OSI_COLORS[5]
     },
     4: {
         "name": "Transporte",
-        "pdu": "Segment / Datagram",
+        "pdu": "Segmento / Datagrama",
         "description": "Conexiones extremo a extremo, confiabilidad, control de flujo y segmentación (TCP/UDP, puertos).",
         "icon": "🚚",
         "color": OSI_COLORS[4]
     },
     3: {
         "name": "Red",
-        "pdu": "Packet",
+        "pdu": "Paquete",
         "description": "Direccionamiento lógico (IP) y determinación de rutas entre redes.",
         "icon": "🌐",
         "color": OSI_COLORS[3]
     },
     2: {
         "name": "Enlace de datos",
-        "pdu": "Frame",
+        "pdu": "Trama",
         "description": "Direccionamiento físico (MAC), tramas y detección de errores (CRC/FCS).",
         "icon": "🔗",
         "color": OSI_COLORS[2]

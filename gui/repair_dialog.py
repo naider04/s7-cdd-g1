@@ -17,7 +17,7 @@ class RepairDialog(tk.Toplevel):
         self.on_repaired = on_repaired
         self.selected_opt_id = tk.StringVar()
 
-        meta = theme.OSI_METADATA.get(issue.layer_num, {"name": f"Layer {issue.layer_num}", "color": theme.COLOR_ERROR})
+        meta = theme.OSI_METADATA.get(issue.layer_num, {"name": f"Capa {issue.layer_num}", "color": theme.COLOR_ERROR})
 
         self.title(f"Diagnóstico y reparación: Capa {issue.layer_num} ({meta['name']})")
         self.geometry("620x540")

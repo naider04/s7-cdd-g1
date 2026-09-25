@@ -29,7 +29,7 @@ class MissionTextMessage(BaseMission):
                 "Codificaciones de caracteres (UTF-8 multibyte vs ASCII de 7 bits)",
                 "Desajuste de codificación y mojibake (Latin-1 vs UTF-8)",
                 "Diferencia entre codificación y cifrado",
-                "Reconstrucción de chat extremo a extremo"
+                "Reconstrucción de mensajería extremo a extremo"
             ]
         )
         self.raw_message = "¡Hola María! ¿Cómo estás? 🚀"
@@ -100,8 +100,8 @@ class MissionTextMessage(BaseMission):
                 stage_id="l7_text_input",
                 layer_num=7,
                 title="Capa de Aplicación — Redactar mensaje",
-                prompt="Type the text message Person A wants to transmit to Person B (include accents or emojis to test Unicode support):",
-                explanation="The user interface in Layer 7 captures human input as abstract character strings.",
+                prompt="Escribe el mensaje de texto que Persona A quiere transmitir a Persona B (incluye acentos o emojis para probar la compatibilidad con Unicode):",
+                explanation="La interfaz de usuario de la capa 7 captura la entrada humana como cadenas de caracteres abstractas.",
                 input_type="TEXT_INPUT",
                 default_value=self.raw_message,
                 input_label="Texto del mensaje:",
@@ -112,19 +112,19 @@ class MissionTextMessage(BaseMission):
                 stage_id="l6_encoding",
                 layer_num=6,
                 title="Capa de Presentación — Codificación de caracteres",
-                prompt="How should Layer 6 serialize the text characters into binary bytes?",
-                explanation="Encoding maps human characters to binary code points. ASCII is 7-bit (128 English characters), while UTF-8 supports over 149,000 international characters.",
+                prompt="¿Cómo debe serializar la capa 6 los caracteres de texto en bytes binarios?",
+                explanation="La codificación asigna caracteres humanos a puntos de código binarios. ASCII utiliza 7 bits (128 caracteres ingleses), mientras que UTF-8 admite más de 149 000 caracteres internacionales.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "utf8",
-                        "title": "UTF-8 (Variable-length Unicode — 1 to 4 bytes per char)",
-                        "desc": "Supports all languages, Spanish accents (¡, á, í, ¿), and emojis."
+                        "title": "UTF-8 (Unicode de longitud variable — de 1 a 4 bytes por carácter)",
+                        "desc": "Admite todos los idiomas, acentos españoles (¡, á, í, ¿) y emojis."
                     },
                     {
                         "id": "ascii",
-                        "title": "ASCII (7-Bit Standard — Values 0 to 127)",
-                        "desc": "Traditional 7-bit English encoding. Non-ASCII characters cause encoding errors."
+                        "title": "ASCII (estándar de 7 bits — valores de 0 a 127)",
+                        "desc": "Codificación tradicional de 7 bits para caracteres básicos. Los caracteres no ASCII producen errores de codificación."
                     }
                 ],
                 default_value="utf8",
@@ -135,23 +135,23 @@ class MissionTextMessage(BaseMission):
                 stage_id="l6_receiver_decode",
                 layer_num=6,
                 title="Capa de Presentación — Interpretación del receptor",
-                prompt="Which decoding standard should Person B's Presentation Layer use to reconstruct the received bytes?",
-                explanation="If the sender and receiver disagree on the representation, raw byte values will be mapped to the wrong glyphs, producing Mojibake.",
+                prompt="¿Qué estándar de decodificación debe usar la capa de Presentación de Persona B para reconstruir los bytes recibidos?",
+                explanation="Si el emisor y el receptor no coinciden en la representación, los valores de los bytes se asignarán a glifos incorrectos y se producirá mojibake.",
                 input_type="CHOICE",
                 options=[
                     {
                         "id": "match_utf8",
-                        "title": "UTF-8 Decoder (Matching Interpretation)",
-                        "desc": "Correctly parses multi-byte sequences into the original characters."
+                        "title": "Decodificador UTF-8 (interpretación coincidente)",
+                        "desc": "Analiza correctamente las secuencias de varios bytes y las convierte en los caracteres originales."
                     },
                     {
                         "id": "mismatch_latin1",
-                        "title": "ISO-8859-1 Latin-1 Decoder (Encoding Mismatch — Triggers Mojibake!)",
-                        "desc": "Interprets each individual byte of a UTF-8 sequence as a separate Latin character, scrambling the text."
+                        "title": "Decodificador ISO-8859-1 Latin-1 (desajuste de codificación: ¡produce mojibake!)",
+                        "desc": "Interpreta cada byte individual de una secuencia UTF-8 como un carácter latino distinto y altera el texto."
                     }
                 ],
                 default_value="match_utf8",
-                button_label="Transmitir por red y decodificar ▶"
+                button_label="Transmitir por la red y decodificar ▶"
             )
         ]
 
@@ -163,9 +163,9 @@ class MissionTextMessage(BaseMission):
 
         if stage.stage_id == "l7_text_input":
             self.raw_message = user_value.strip() or "¡Hola María! ¿Cómo estás? 🚀"
-            self.update_layer("sender", 7, LayerStatus.COMPLETE, f"Captured: '{self.raw_message[:20]}...'")
-            self.log("INFO", "✓", f"L7 (Application): Text message input captured: '{self.raw_message}'", 7)
-            self.inspector_data.app_protocol = "JSON Instant Message"
+            self.update_layer("sender", 7, LayerStatus.COMPLETE, f"Capturado: '{self.raw_message[:20]}...'")
+            self.log("INFO", "✓", f"L7 (Aplicación): texto del mensaje capturado: '{self.raw_message}'", 7)
+            self.inspector_data.app_protocol = "Mensaje instantáneo JSON"
             self.inspector_data.payload_text = f'{{"text": "{self.raw_message}"}}'
             self.inspector_data.payload_hex = format_hex_dump(self.inspector_data.payload_text.encode("utf-8", errors="replace"))
             self.notify_inspector()
@@ -179,38 +179,38 @@ class MissionTextMessage(BaseMission):
                 try:
                     self.raw_message.encode("ascii")
                 except UnicodeEncodeError:
-                    self.update_layer("sender", 6, LayerStatus.ERROR, "ASCII UnicodeEncodeError!", has_error=True)
-                    self.log("ERROR", "⚠", f"Consequence: ASCII is a 7-bit encoding (0-127). The message '{self.raw_message}' contains non-ASCII characters that cannot be represented in ASCII!", 6)
+                    self.update_layer("sender", 6, LayerStatus.ERROR, "Error de codificación UnicodeEncodeError al usar ASCII", has_error=True)
+                    self.log("ERROR", "⚠", f"Consecuencia: ASCII es una codificación de 7 bits (0-127). ¡El mensaje '{self.raw_message}' contiene caracteres no ASCII que no se pueden representar en ASCII!", 6)
 
                     def fix_to_utf8():
                         self.selected_encoding = "UTF-8"
-                        self.update_layer("sender", 6, LayerStatus.COMPLETE, "UTF-8 Encoded")
-                        self.log("SUCCESS", "✓", "Repaired to UTF-8: Multi-byte Unicode supports all international characters and emojis.", 6)
+                        self.update_layer("sender", 6, LayerStatus.COMPLETE, "UTF-8 codificado")
+                        self.log("SUCCESS", "✓", "Reparación: se cambió a UTF-8; Unicode de varios bytes admite todos los caracteres internacionales y los emojis.", 6)
                         self._advance_to_next_stage()
 
                     issue = TroubleshootIssue(
                         layer_num=6,
-                        title="Presentation Layer: Character Set Incompatibility (ASCII)",
-                        summary="The text contains non-ASCII code points (Spanish accents, emojis). ASCII only supports 128 standard English characters.",
+                        title="Capa de Presentación: conjunto de caracteres incompatible (ASCII)",
+                        summary="El texto contiene puntos de código no ASCII (acentos españoles y emojis). ASCII solo define 128 puntos de código, con valores de 0 a 127.",
                         details=(
-                            f"The input string contains characters like '¡', 'á', 'í', '¿' or '🚀'.\n\n"
-                            "ASCII uses 7 bits per character (0 to 127). Any character above 127 cannot be serialized into ASCII bytes without data loss or exceptions.\n\n"
-                            "UTF-8 is an 8-bit variable-length encoding that dynamically uses 1 to 4 bytes per character, supporting all written human languages and symbols."
+                            f"La cadena de entrada contiene caracteres como '¡', 'á', 'í', '¿' o '🚀'.\n\n"
+                            "ASCII usa 7 bits por carácter (de 0 a 127). Cualquier carácter con un valor superior a 127 no se puede serializar en bytes ASCII sin perder datos ni provocar una excepción.\n\n"
+                            "UTF-8 es una codificación de 8 bits y longitud variable que utiliza dinámicamente de 1 a 4 bytes por carácter, y admite todos los idiomas escritos y símbolos humanos."
                         ),
                         options=[
                             RepairOption(
                                 id="fix_utf8",
-                                title="Switch Presentation Layer to UTF-8 (Recommended)",
-                                description="Encode text using UTF-8 variable-length Unicode.",
+                                title="Cambiar la capa de Presentación a UTF-8 (recomendado)",
+                                description="Codificar el texto mediante Unicode UTF-8 de longitud variable.",
                                 is_correct=True,
-                                feedback="Correct! UTF-8 seamlessly encodes Spanish accents and emojis."
+                                feedback="¡Correcto! UTF-8 codifica sin problemas los acentos españoles y los emojis."
                             ),
                             RepairOption(
                                 id="strip_chars",
-                                title="Delete all accents and emojis to force ASCII",
-                                description="Mutate text to plain English.",
+                                title="Eliminar todos los acentos y emojis para forzar ASCII",
+                                description="Modificar el texto para eliminar los caracteres no ASCII.",
                                 is_correct=False,
-                                feedback="Incorrect! Network protocols must accommodate user data without stripping meaning."
+                                feedback="¡Incorrecto! Los protocolos de red deben admitir los datos del usuario sin eliminar su significado."
                             )
                         ],
                         on_repair_success=fix_to_utf8
@@ -218,8 +218,8 @@ class MissionTextMessage(BaseMission):
                     self.trigger_error(issue)
                     return
 
-            self.update_layer("sender", 6, LayerStatus.COMPLETE, f"{self.selected_encoding} Encoded")
-            self.log("INFO", "✓", f"L6 (Presentation): Text serialized into bytes using {self.selected_encoding}.", 6)
+            self.update_layer("sender", 6, LayerStatus.COMPLETE, f"{self.selected_encoding} codificado")
+            self.log("INFO", "✓", f"L6 (Presentación): texto serializado en bytes usando {self.selected_encoding}.", 6)
             self.inspector_data.encoding = self.selected_encoding
             self.notify_inspector()
             self._advance_to_next_stage()
@@ -229,16 +229,16 @@ class MissionTextMessage(BaseMission):
 
             # Encapsulate lower layers
             for lyr in [5, 4, 3, 2, 1]:
-                self.update_layer("sender", lyr, LayerStatus.COMPLETE, "Encapsulated")
+                self.update_layer("sender", lyr, LayerStatus.COMPLETE, "Encapsulado")
 
-            self.log("INFO", "→", "Transmitting encoded bitstream across network...", None)
+            self.log("INFO", "→", "Transmitiendo el flujo de bits codificado por la red...", None)
 
             def on_msg_transmitted():
                 self.packets_sent += 1
                 self.packets_received += 1
 
                 for lyr in [1, 2, 3, 4, 5]:
-                    self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Decapsulated")
+                    self.update_layer("receiver", lyr, LayerStatus.COMPLETE, "Desencapsulado")
 
                 # Test consequence of receiver decoding choice!
                 if self.receiver_decoding == "ISO-8859-1" and self.selected_encoding == "UTF-8":
@@ -246,41 +246,41 @@ class MissionTextMessage(BaseMission):
                     raw_bytes = self.raw_message.encode("utf-8")
                     mojibake_text = raw_bytes.decode("latin-1", errors="replace")
 
-                    self.update_layer("receiver", 6, LayerStatus.ERROR, "Mojibake Mismatch!", has_error=True)
-                    self.log("ERROR", "⚠", f"Consequence: Presentation Layer Mismatch! Receiver decoded UTF-8 bytes using Latin-1. Rendered garbled Mojibake: '{mojibake_text}'", 6)
+                    self.update_layer("receiver", 6, LayerStatus.ERROR, "¡Desajuste de mojibake!", has_error=True)
+                    self.log("ERROR", "⚠", f"Consecuencia: ¡desajuste de la capa de Presentación! El receptor decodificó los bytes UTF-8 usando Latin-1. Se mostró mojibake ilegible: '{mojibake_text}'", 6)
                     self.render_chat_message(mojibake_text, is_corrupted=True)
 
                     def fix_mojibake():
                         self.receiver_decoding = "UTF-8"
-                        self.update_layer("receiver", 6, LayerStatus.COMPLETE, "UTF-8 Decoded Cleanly")
-                        self.update_layer("receiver", 7, LayerStatus.COMPLETE, "Delivered")
-                        self.log("SUCCESS", "✓", "Repaired: Receiver Presentation Layer aligned to UTF-8. Mojibake resolved!", 6)
+                        self.update_layer("receiver", 6, LayerStatus.COMPLETE, "UTF-8 decodificado correctamente")
+                        self.update_layer("receiver", 7, LayerStatus.COMPLETE, "Entregado")
+                        self.log("SUCCESS", "✓", "Reparación: la capa de Presentación del receptor se alineó con UTF-8. ¡Mojibake resuelto!", 6)
                         self.render_chat_message(self.raw_message, is_corrupted=False)
                         self._finish_text_mission()
 
                     issue = TroubleshootIssue(
                         layer_num=6,
-                        title="Presentation Layer: Mojibake Character Corruption",
-                        summary=f"Sender sent UTF-8, but receiver interpreted bytes as ISO-8859-1 (Latin-1). Person B received: '{mojibake_text}'.",
+                        title="Capa de Presentación: corrupción de caracteres por mojibake",
+                        summary=f"El emisor envió UTF-8, pero el receptor interpretó los bytes como ISO-8859-1 (Latin-1). Persona B recibió: '{mojibake_text}'.",
                         details=(
-                            "This illustrates the core purpose of Layer 6 (Presentation).\n\n"
-                            "Even though all network packets and bits arrived with 100% accuracy, the information is garbled because the endpoints did not agree on how to interpret the byte sequences.\n\n"
-                            "In UTF-8, '¡' is two bytes (0xC2 0xA1). When Latin-1 reads those two bytes, it treats them as two separate characters ('Ã' and '¡'), creating Mojibake."
+                            "Esto ilustra el propósito fundamental de la capa 6 (Presentación).\n\n"
+                            "Aunque todos los paquetes y bits de red llegaron con un 100 % de precisión, la información está ilegible porque los extremos no se pusieron de acuerdo sobre cómo interpretar las secuencias de bytes.\n\n"
+                            "En UTF-8, '¡' ocupa dos bytes (0xC2 0xA1). Cuando Latin-1 lee esos dos bytes, los trata como dos caracteres distintos ('Ã' y '¡'), lo que produce mojibake."
                         ),
                         options=[
                             RepairOption(
                                 id="align_utf8",
-                                title="Align Receiver to UTF-8 Decoder (Recommended)",
-                                description="Decode the multi-byte sequences using UTF-8.",
+                                title="Alinear el receptor con el decodificador UTF-8 (recomendado)",
+                                description="Decodificar las secuencias de varios bytes mediante UTF-8.",
                                 is_correct=True,
-                                feedback="Correct! Bytes are recombined into the original Spanish characters."
+                                feedback="¡Correcto! Los bytes se recombinan para formar los caracteres españoles originales."
                             ),
                             RepairOption(
                                 id="ignore_garble",
-                                title="Leave text as Mojibake",
-                                description="Expect recipient to guess the original words.",
+                                title="Dejar el texto como mojibake",
+                                description="Esperar que el destinatario adivine las palabras originales.",
                                 is_correct=False,
-                                feedback="Incorrect. Text is unreadable."
+                                feedback="Incorrecto. El texto es ilegible."
                             )
                         ],
                         on_repair_success=fix_mojibake
@@ -289,14 +289,14 @@ class MissionTextMessage(BaseMission):
                     return
 
                 # Clean decode
-                self.update_layer("receiver", 6, LayerStatus.COMPLETE, "UTF-8 Decoded")
-                self.update_layer("receiver", 7, LayerStatus.COMPLETE, "Message Delivered")
+                self.update_layer("receiver", 6, LayerStatus.COMPLETE, "UTF-8 decodificado")
+                self.update_layer("receiver", 7, LayerStatus.COMPLETE, "Mensaje entregado")
                 self.render_chat_message(self.raw_message, is_corrupted=False)
-                self.log("SUCCESS", "✓", f"Person B received and cleanly decoded: '{self.raw_message}'", 7)
+                self.log("SUCCESS", "✓", f"Persona B recibió y decodificó correctamente: '{self.raw_message}'", 7)
                 self._finish_text_mission()
 
             if self.cb_network_animate:
-                self.cb_network_animate("Person A", "Person B", "PACKET", "Chat Text", False, on_msg_transmitted)
+                self.cb_network_animate("Person A", "Person B", "PACKET", "Mensaje de texto", False, on_msg_transmitted)
             else:
                 on_msg_transmitted()
 
@@ -306,7 +306,7 @@ class MissionTextMessage(BaseMission):
             "Codificación de presentación": "UTF-8 (Unicode de longitud variable)",
             "Decisiones tomadas": self.decisions_made,
             "Errores diagnosticados y corregidos": self.errors_repaired,
-            "Lección clave": "La capa 6 (Presentación) gobierna la interpretación de datos. Las capas inferiores pueden entregar el 100% de los paquetes, pero si la representación de caracteres no coincide, la aplicación recibe mojibake."
+            "Lección clave": "La capa 6 (Presentación) gobierna la interpretación de datos. Las capas inferiores pueden entregar el 100 % de los paquetes, pero si la representación de caracteres no coincide, la aplicación recibe mojibake."
         })
 
     def _advance_to_next_stage(self):

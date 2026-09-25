@@ -88,7 +88,7 @@ class BaseMission:
             "sender" if self.current_side == "sender" else "receiver",
             issue.layer_num,
             LayerStatus.ERROR,
-            f"ERROR: {issue.title}",
+            f"Error: {issue.title}",
             has_error=True
         )
         self.log("ERROR", "⚠", f"Consecuencia en capa {issue.layer_num} ({issue.title}): {issue.summary}", issue.layer_num)

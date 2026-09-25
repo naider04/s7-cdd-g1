@@ -30,7 +30,7 @@ def text_to_bits(text: str, max_bytes: int = 16) -> str:
 def format_hex_dump(data_bytes: bytes, max_bytes: int = 48) -> str:
     """Format bytes into a neat Wireshark-like hex dump."""
     if not data_bytes:
-        return "0000: (Empty payload)"
+        return "0000: (Carga útil vacía)"
 
     dump_lines: List[str] = []
     chunk_size = 16
@@ -45,7 +45,7 @@ def format_hex_dump(data_bytes: bytes, max_bytes: int = 48) -> str:
         dump_lines.append(f"{offset:04X}  {hex_part}  |{ascii_part}|")
 
     if len(data_bytes) > max_bytes:
-        dump_lines.append(f"... ({len(data_bytes) - max_bytes} more bytes)")
+        dump_lines.append(f"... ({len(data_bytes) - max_bytes} bytes más)")
 
     return "\n".join(dump_lines)
 
