@@ -7,6 +7,8 @@ Python project to understand the osi model. UNEMI assignment. 4th semestrer, Inf
 python app.py
 ```
 
+The simulator uses a Tkinter desktop interface.
+
 ## Test
 
 ```bash

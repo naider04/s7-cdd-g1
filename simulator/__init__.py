@@ -1,3 +1,3 @@
-from .ui import run_mission
+from .ui import format_result
 
-__all__ = ["run_mission"]
+__all__ = ["format_result"]

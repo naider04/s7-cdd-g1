@@ -2,6 +2,7 @@ import unittest
 
 from missions import all_missions
 from simulator.engine import simulate_mission
+from simulator.ui import format_result
 
 
 class SimulatorTests(unittest.TestCase):
@@ -26,6 +27,14 @@ class SimulatorTests(unittest.TestCase):
         self.assertEqual(7, len(result.layer_objects))
         self.assertIn("Transport", result.layer_objects)
         self.assertIn("Type", result.layer_objects["Transport"])
+
+    def test_formatted_result_contains_event_log_and_inspector(self):
+        mission = next(m for m in all_missions() if m.mission_id == 2)
+        result = simulate_mission(mission)
+        output = format_result(result)
+
+        self.assertIn("EVENT LOG", output)
+        self.assertIn("Packet/Frame Inspector", output)
 
 
 if __name__ == "__main__":
