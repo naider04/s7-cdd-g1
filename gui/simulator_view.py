@@ -16,6 +16,7 @@ from gui.inspector_widget import InspectorWidget
 from gui.event_log_widget import EventLogWidget
 from gui.repair_dialog import RepairDialog
 from gui.completion_dialog import CompletionDialog
+from gui.cascade_panel import CascadePanel
 
 
 class SimulatorView(tk.Frame):
@@ -105,6 +106,22 @@ class SimulatorView(tk.Frame):
             bg=theme.BG_PANEL
         )
         self.lbl_progress.pack(side=tk.LEFT, padx=(0, 15))
+
+        btn_cascade = tk.Button(
+            ctrls,
+            text="🔬 Cascada OSI (base64/CRC32)",
+            font=theme.FONT_SMALL,
+            bg=theme.BG_CARD,
+            fg=theme.TEXT_ACCENT,
+            activebackground=theme.BG_CARD_HOVER,
+            activeforeground="#ffffff",
+            bd=0,
+            padx=10,
+            pady=4,
+            cursor="hand2",
+            command=self.open_cascade_lab
+        )
+        btn_cascade.pack(side=tk.LEFT, padx=(0, 10))
 
         btn_reset = tk.Button(
             ctrls,
@@ -490,6 +507,9 @@ class SimulatorView(tk.Frame):
     def on_wrench_clicked(self, layer_num: int):
         if self.mission.active_issue and self.mission.active_issue.layer_num == layer_num:
             self.handle_troubleshoot(self.mission.active_issue)
+
+    def open_cascade_lab(self):
+        return CascadePanel.abrir(self)
 
     def reset_simulation(self):
         self.sender_stack.reset_all()
